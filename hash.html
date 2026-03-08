@@ -1,0 +1,2289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CYBER NET LAB</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#03060a;--bg2:#060c10;--bg3:#0a1218;--bg4:#0d1820;
+  --g:#00ff88;--g2:#00cc6a;--c:#00e5ff;--c2:#00b8cc;
+  --o:#ff6b35;--p:#b06aff;--y:#ffe066;--r:#ff3b3b;
+  --w:#e8f4f0;--dim:#0f2a1a;--dim2:#0a1e2a;
+  --mono:'Share Tech Mono',monospace;
+  --head:'Orbitron',monospace;
+  --body:'Rajdhani',sans-serif;
+  --glow:0 0 20px rgba(0,255,136,0.3);
+  --cglow:0 0 20px rgba(0,229,255,0.3);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:#8ab8a0;font-family:var(--mono);font-size:13px;line-height:1.6;overflow-x:hidden;cursor:crosshair;}
+
+/* GRID BACKGROUND */
+body::before{content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,255,136,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,136,0.03) 1px,transparent 1px);
+  background-size:40px 40px;pointer-events:none;z-index:0;}
+
+/* SCANLINES */
+body::after{content:'';position:fixed;inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.08) 3px,rgba(0,0,0,0.08) 4px);
+  pointer-events:none;z-index:9998;}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:500;background:rgba(3,6,10,0.96);border-bottom:1px solid #0f2a1a;backdrop-filter:blur(12px);padding:0 24px;display:flex;align-items:stretch;gap:0;}
+.nav-logo{display:flex;align-items:center;gap:10px;padding:10px 20px 10px 0;border-right:1px solid #0f2a1a;margin-right:8px;flex-shrink:0;}
+.nav-logo-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--g),var(--c));border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.nav-logo-text{font-family:var(--head);color:var(--g);font-size:12px;letter-spacing:3px;}
+.nav-tabs{display:flex;align-items:stretch;gap:0;overflow-x:auto;scrollbar-width:none;}
+.nav-tab{display:flex;align-items:center;gap:6px;padding:0 16px;font-size:11px;letter-spacing:1.5px;color:#1e4030;text-decoration:none;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;cursor:pointer;background:none;border-top:none;border-left:none;border-right:none;font-family:var(--mono);}
+.nav-tab:hover{color:var(--g);background:rgba(0,255,136,0.04);}
+.nav-tab.active{color:var(--g);border-bottom-color:var(--g);}
+.nav-tab .tab-icon{font-size:14px;}
+
+/* MAIN */
+main{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:32px 20px 80px;}
+
+/* PANELS */
+.panel{background:var(--bg2);border:1px solid var(--dim);border-radius:12px;padding:24px;margin-bottom:28px;position:relative;overflow:hidden;}
+.panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--g),transparent);opacity:.4;}
+.panel-head{display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid #0d1e14;}
+.panel-num{font-family:var(--head);font-size:10px;letter-spacing:3px;color:#0f2a1a;background:var(--bg3);border:1px solid var(--dim);padding:4px 10px;border-radius:3px;}
+.panel-title{font-family:var(--head);font-size:15px;font-weight:700;}
+.panel-sub{font-size:11px;color:#1e4030;margin-left:auto;letter-spacing:1px;}
+
+/* SECTION LABEL */
+.sec-label{font-size:9px;letter-spacing:3px;color:#1e4030;text-transform:uppercase;margin-bottom:8px;}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+
+/* CARD */
+.card{background:var(--bg3);border:1px solid #0d1e14;border-radius:8px;padding:14px 16px;transition:border-color .2s;}
+.card:hover{border-color:var(--dim);}
+
+/* STAT BOX */
+.stat{background:var(--bg3);border:1px solid #0d1e14;border-radius:8px;padding:12px 14px;text-align:center;}
+.stat-val{font-family:var(--head);font-size:18px;font-weight:900;margin-bottom:3px;}
+.stat-lbl{font-size:9px;letter-spacing:2px;color:#1e4030;}
+
+/* TERMINAL */
+.term{background:#020508;border:1px solid #081814;border-radius:10px;overflow:hidden;margin-bottom:14px;box-shadow:0 4px 24px rgba(0,0,0,0.6);}
+.term-bar{background:#040c0a;padding:8px 14px;display:flex;align-items:center;gap:6px;border-bottom:1px solid #081814;position:relative;}
+.dot{width:10px;height:10px;border-radius:50%;}
+.term-title{margin-left:10px;font-size:10px;color:#1e3a28;letter-spacing:1px;font-family:var(--head);}
+.term-badge{margin-left:auto;font-size:9px;color:var(--g);background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.2);padding:2px 8px;border-radius:10px;letter-spacing:1px;}
+.term-body{padding:12px 16px;min-height:120px;max-height:320px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#0f2a1a transparent;}
+.t{margin-bottom:2px;white-space:pre-wrap;word-break:break-all;line-height:1.6;}
+.ti{color:var(--g);}
+.to{color:#4a8a60;}
+.th{color:var(--c);}
+.te{color:var(--r);}
+.tw{color:var(--o);}
+.tp{color:var(--p);}
+.ty{color:var(--y);}
+.term-input{display:flex;align-items:center;gap:8px;padding:8px 16px;border-top:1px solid #081814;background:#020508;}
+.term-prompt{color:var(--g);flex-shrink:0;font-size:13px;}
+.term-input input{flex:1;background:transparent;border:none;outline:none;color:var(--g);font-family:var(--mono);font-size:13px;caret-color:var(--g);}
+.term-input input::placeholder{color:#0f2a1a;}
+
+/* BUTTON */
+.btn{background:var(--g);color:#000;border:none;border-radius:6px;padding:9px 20px;font-family:var(--mono);font-size:12px;font-weight:bold;cursor:pointer;transition:all .2s;letter-spacing:1px;}
+.btn:hover{background:var(--g2);box-shadow:var(--glow);}
+.btn-c{background:var(--c);color:#000;}
+.btn-c:hover{background:var(--c2);box-shadow:var(--cglow);}
+.btn-o{background:transparent;border:1px solid;border-radius:5px;padding:6px 14px;font-family:var(--mono);font-size:11px;cursor:pointer;transition:all .2s;letter-spacing:1px;}
+
+/* INPUT */
+.inp{background:var(--bg3);border:1px solid #0d1e14;border-radius:6px;padding:9px 14px;color:var(--g);font-family:var(--mono);font-size:13px;outline:none;transition:border-color .2s;}
+.inp:focus{border-color:var(--g);box-shadow:0 0 0 2px rgba(0,255,136,0.1);}
+
+/* CHIP */
+.chip{background:transparent;border:1px solid #0d1e14;border-radius:20px;padding:4px 12px;font-family:var(--mono);font-size:11px;cursor:pointer;transition:all .2s;}
+.chip:hover{border-color:var(--g);color:var(--g);}
+
+/* BADGE */
+.badge{font-size:9px;padding:2px 7px;border-radius:3px;letter-spacing:1px;font-weight:bold;}
+
+/* WARN */
+.warn{background:#150500;border:1px solid #3a1200;border-radius:8px;padding:14px 16px;}
+.warn-t{color:var(--o);font-weight:bold;font-size:12px;margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+.warn-b{color:#6a4030;font-size:11px;line-height:1.8;}
+
+/* CHALLENGE BOX */
+.challenge{background:#060310;border:1px solid #1a0a3a;border-radius:10px;padding:18px;margin-bottom:12px;}
+.ch-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.ch-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--head);font-size:10px;font-weight:900;flex-shrink:0;}
+.ch-title{color:var(--p);font-family:var(--head);font-size:12px;letter-spacing:1px;}
+.ch-diff{margin-left:auto;font-size:9px;padding:2px 8px;border-radius:10px;letter-spacing:1px;}
+.ch-body{color:#5a4a7a;font-size:12px;line-height:1.7;margin-bottom:14px;}
+.ch-hint{background:#0a0620;border:1px solid #1a0a3a;border-radius:6px;padding:10px 12px;margin-bottom:10px;color:#3a2a5a;font-size:11px;display:none;}
+.ch-hint.show{display:block;}
+
+/* PROGRESS */
+.prog-wrap{background:#0a1210;border-radius:100px;height:6px;overflow:hidden;margin-top:6px;}
+.prog-bar{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--g),var(--c));transition:width .6s ease;}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:none;}}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.5;}}
+@keyframes scan{0%{transform:translateY(-100%);}100%{transform:translateY(100vh);}}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+@keyframes glow{0%,100%{text-shadow:0 0 8px var(--g);}50%{text-shadow:0 0 20px var(--g),0 0 40px var(--g);}}
+@keyframes spin{to{transform:rotate(360deg);}}
+@keyframes drawLine{from{stroke-dashoffset:1000;}to{stroke-dashoffset:0;}}
+@keyframes popIn{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}
+
+.panel{animation:fadeUp .4s both;}
+.panel:nth-child(1){animation-delay:.05s;}
+.panel:nth-child(2){animation-delay:.1s;}
+.panel:nth-child(3){animation-delay:.15s;}
+.panel:nth-child(4){animation-delay:.2s;}
+.panel:nth-child(5){animation-delay:.25s;}
+.panel:nth-child(6){animation-delay:.3s;}
+.panel:nth-child(7){animation-delay:.35s;}
+.panel:nth-child(8){animation-delay:.4s;}
+
+.blink{animation:blink 1s infinite;}
+.pulse-g{animation:glow 2s infinite;}
+
+/* SVG DIAGRAMS */
+svg text{font-family:var(--mono);}
+
+/* CIDR VISUAL */
+.cidr-bar-wrap{margin-top:16px;}
+.cidr-scale-row{display:flex;align-items:center;gap:10px;margin-bottom:5px;padding:5px 8px;border-radius:5px;transition:background .2s;cursor:pointer;}
+.cidr-scale-row:hover{background:var(--bg3);}
+.cs-tag{color:var(--g);font-size:11px;width:32px;text-align:right;flex-shrink:0;}
+.cs-bg{flex:1;height:8px;background:#0a1410;border-radius:4px;overflow:hidden;}
+.cs-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--g),var(--c));transition:width .8s cubic-bezier(.34,1.56,.64,1);}
+.cs-count{font-size:10px;color:#1e4030;width:65px;text-align:right;flex-shrink:0;}
+.cs-note{font-size:9px;color:#142010;flex:1;}
+
+/* IPv4 PACKET DIAGRAM */
+.packet-field{fill:none;stroke-width:1;}
+.pf-label{font-size:9px;fill:#2a5040;text-anchor:middle;}
+.pf-val{font-size:11px;fill:var(--g);text-anchor:middle;font-weight:bold;}
+
+/* DNS TREE */
+.dns-node{cursor:pointer;}
+.dns-node circle{transition:r .2s,fill .2s;}
+.dns-node:hover circle{r:22;}
+.dns-edge{stroke:#0f2a1a;stroke-width:1.5;fill:none;stroke-dasharray:1000;animation:drawLine 1.5s ease forwards;}
+
+/* PORT HEAT MAP */
+.port-heat{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:4px;margin-top:10px;}
+.ph-cell{background:var(--bg3);border:1px solid #0d1e14;border-radius:4px;padding:6px 4px;text-align:center;cursor:pointer;transition:all .2s;position:relative;}
+.ph-cell:hover{transform:scale(1.1);z-index:10;}
+.ph-cell .ph-port{font-size:10px;font-weight:bold;}
+.ph-cell .ph-name{font-size:8px;color:#1e3a28;margin-top:1px;}
+
+/* IPv4 BREAKDOWN */
+.octet-box{background:var(--bg3);border-radius:8px;padding:14px;text-align:center;border:1px solid var(--dim);transition:all .3s;cursor:pointer;}
+.octet-box:hover{border-color:var(--g);transform:translateY(-4px);box-shadow:var(--glow);}
+.octet-val{font-family:var(--head);font-size:28px;font-weight:900;color:var(--g);line-height:1;}
+.octet-bin{font-size:9px;color:#1e3a28;margin-top:4px;letter-spacing:1px;}
+.octet-lbl{font-size:9px;color:#2a5040;margin-top:6px;letter-spacing:2px;}
+
+/* HANDSHAKE TIMELINE */
+.hs-timeline{position:relative;padding:10px 0;}
+.hs-step{display:flex;align-items:center;gap:0;margin-bottom:0;opacity:.15;transition:opacity .4s,transform .4s;}
+.hs-step.on{opacity:1;}
+.hs-left{width:120px;text-align:right;font-size:11px;padding-right:16px;flex-shrink:0;}
+.hs-center{width:180px;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0;}
+.hs-line-h{position:absolute;top:50%;left:10px;right:10px;height:2px;transform:translateY(-50%);}
+.hs-arrow{font-size:20px;position:absolute;}
+.hs-pkg{padding:6px 14px;border-radius:20px;font-size:11px;font-weight:bold;font-family:var(--head);letter-spacing:1px;z-index:1;}
+.hs-right{flex:1;font-size:10px;color:#2a5040;padding-left:16px;}
+
+/* STATUS GRID */
+.status-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;}
+.sc-card{background:var(--bg3);border-radius:7px;padding:10px 14px;border-left:3px solid;cursor:pointer;transition:all .2s;overflow:hidden;}
+.sc-card:hover{transform:translateX(4px);}
+.sc-code{font-family:var(--head);font-size:20px;font-weight:900;}
+.sc-name{font-size:10px;color:#3a6040;margin-bottom:0;}
+.sc-desc{font-size:10px;color:#2a4030;margin-top:6px;display:none;line-height:1.6;}
+.sc-card.open .sc-desc{display:block;}
+
+/* CHALLENGE SCORE */
+.score-bar{display:flex;align-items:center;gap:12px;background:var(--bg3);border-radius:8px;padding:12px 16px;margin-bottom:20px;border:1px solid var(--dim);}
+.score-val{font-family:var(--head);font-size:22px;color:var(--g);}
+.score-lbl{font-size:9px;color:#1e4030;letter-spacing:2px;}
+.xp-bar{flex:1;background:#0a1410;height:8px;border-radius:4px;overflow:hidden;}
+.xp-fill{height:100%;background:linear-gradient(90deg,var(--g),var(--c));transition:width .6s;}
+
+/* TOOLTIP */
+.tooltip{position:absolute;background:var(--bg4);border:1px solid var(--dim);border-radius:6px;padding:8px 12px;font-size:11px;color:var(--w);pointer-events:none;z-index:999;white-space:nowrap;transform:translateX(-50%);bottom:calc(100% + 8px);left:50%;opacity:0;transition:opacity .2s;}
+.ph-cell:hover .tooltip{opacity:1;}
+
+/* IPv6 VISUALIZER */
+.ipv6-groups{display:flex;gap:4px;flex-wrap:wrap;justify-content:center;margin:12px 0;}
+.ipv6-grp{background:var(--bg3);border:1px solid #1a0a3a;border-radius:5px;padding:8px 10px;text-align:center;min-width:60px;}
+.ipv6-hex{color:var(--p);font-size:14px;font-weight:bold;}
+.ipv6-dec{font-size:9px;color:#3a2a5a;margin-top:2px;}
+
+/* RESPONSIVE */
+@media(max-width:700px){
+  .g2,.g3,.g4{grid-template-columns:1fr;}
+  .hs-left{width:80px;font-size:10px;}
+  .hs-center{width:120px;}
+  nav{padding:0 10px;}
+  .nav-logo-text{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-icon">⬡</div>
+    <div>
+      <div class="nav-logo-text">CYBER NET LAB</div>
+    </div>
+  </div>
+  <div class="nav-tabs" id="nav-tabs">
+    <button class="nav-tab active" data-sec="ipv4"><span class="tab-icon">🌐</span> IPv4</button>
+    <button class="nav-tab" data-sec="cidr"><span class="tab-icon">📐</span> CIDR</button>
+    <button class="nav-tab" data-sec="ipv6"><span class="tab-icon">🔮</span> IPv6</button>
+    <button class="nav-tab" data-sec="tcp"><span class="tab-icon">🔗</span> TCP/UDP</button>
+    <button class="nav-tab" data-sec="ports"><span class="tab-icon">🔌</span> PORTS</button>
+    <button class="nav-tab" data-sec="dns"><span class="tab-icon">📡</span> DNS</button>
+    <button class="nav-tab" data-sec="http"><span class="tab-icon">🔐</span> HTTP</button>
+    <button class="nav-tab" data-sec="challenges"><span class="tab-icon">⚔️</span> CHALLENGES</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- ═══════ IPv4 ═══════ -->
+<section id="sec-ipv4">
+<div class="panel">
+  <div class="panel-head">
+    <div class="panel-num">01</div>
+    <div class="panel-title" style="color:var(--g)">IPv4 — Internet Protocol Version 4</div>
+    <div class="panel-sub">32-BIT ADDRESS SPACE</div>
+  </div>
+
+  <!-- Octet interactive -->
+  <div class="sec-label">Click an octet to edit — binary auto-updates</div>
+  <div class="g4" style="margin-bottom:16px" id="octet-boxes"></div>
+  <div style="text-align:center;margin-bottom:14px">
+    <span style="color:#1e4030;font-size:11px">Full 32-bit binary: </span>
+    <span id="full-binary" style="color:var(--g);font-size:12px;letter-spacing:2px;word-break:break-all"></span>
+  </div>
+
+  <!-- IPv4 Packet Header SVG -->
+  <div class="sec-label">IPv4 PACKET HEADER STRUCTURE</div>
+  <div style="overflow-x:auto;margin-bottom:16px;">
+    <svg id="packet-svg" width="100%" height="140" viewBox="0 0 800 140" style="min-width:600px"></svg>
+  </div>
+
+  <!-- Stats -->
+  <div class="g4" style="margin-bottom:16px">
+    <div class="stat"><div class="stat-val" style="color:var(--g)">32</div><div class="stat-lbl">BITS PER ADDRESS</div></div>
+    <div class="stat"><div class="stat-val" style="color:var(--c)">4.29B</div><div class="stat-lbl">TOTAL ADDRESSES</div></div>
+    <div class="stat"><div class="stat-val" style="color:var(--o)">2011</div><div class="stat-lbl">IANA EXHAUSTION</div></div>
+    <div class="stat"><div class="stat-val" style="color:var(--r)">~0</div><div class="stat-lbl">FREE BLOCKS LEFT</div></div>
+  </div>
+
+  <!-- Private ranges visual -->
+  <div class="sec-label">PRIVATE IP RANGES — RFC 1918</div>
+  <div id="private-vis"></div>
+
+  <!-- IPv4 classes diagram -->
+  <div class="sec-label" style="margin-top:16px">IP ADDRESS CLASSES</div>
+  <div style="overflow-x:auto;">
+    <svg id="class-svg" width="100%" height="100" viewBox="0 0 800 100" style="min-width:500px"></svg>
+  </div>
+
+  <!-- Terminal -->
+  <div class="sec-label" style="margin-top:16px">LIVE KALI TERMINAL — IPv4 LAB</div>
+  <div class="term">
+    <div class="term-bar">
+      <div class="dot" style="background:#ff5f57"></div>
+      <div class="dot" style="background:#febc2e"></div>
+      <div class="dot" style="background:#28c840"></div>
+      <div class="term-title">root@kali:~# IPv4-Lab</div>
+      <div class="term-badge">LIVE</div>
+    </div>
+    <div class="term-body" id="t-ipv4">
+      <div class="t th">┌──(root㉿kali)-[~]</div>
+      <div class="t th">└─# IPv4 Lab Terminal — type <span style="color:var(--g)">help</span> for commands</div>
+      <div class="t to">Try: ip addr  |  ifconfig  |  ping 8.8.8.8  |  ipcalc 192.168.1.0/24</div>
+    </div>
+    <div class="term-input">
+      <span class="term-prompt">root@kali:~#</span>
+      <input id="c-ipv4" placeholder="ip addr show" onkeydown="termCmd(event,'ipv4')">
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════ CIDR ═══════ -->
+<section id="sec-cidr">
+<div class="panel">
+  <div class="panel-head">
+    <div class="panel-num">02</div>
+    <div class="panel-title" style="color:var(--c)">CIDR — Classless Inter-Domain Routing</div>
+    <div class="panel-sub">SUBNET CALCULATOR</div>
+  </div>
+
+  <!-- Live Calculator -->
+  <div class="sec-label">LIVE SUBNET CALCULATOR</div>
+  <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+    <input class="inp" id="cidr-inp" style="flex:1;min-width:180px" value="192.168.1.0/24" placeholder="e.g. 10.0.0.0/8">
+    <button class="btn" onclick="runCIDR()">CALCULATE</button>
+    <button class="btn btn-c" onclick="runCIDR('0.0.0.0/0')">0.0.0.0/0 ⚠</button>
+  </div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px" id="cidr-chips"></div>
+  
+  <!-- Results -->
+  <div id="cidr-result-wrap" style="display:none">
+    <div class="g2" style="margin-bottom:14px">
+      <div>
+        <div class="sec-label">CALCULATION OUTPUT</div>
+        <div id="cidr-output" style="background:#020508;border-radius:8px;padding:14px;font-size:12px;border:1px solid #081814;"></div>
+      </div>
+      <div>
+        <div class="sec-label">VISUAL MAP</div>
+        <svg id="cidr-svg" width="100%" height="160" viewBox="0 0 380 160"></svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Prefix Scale -->
+  <div class="sec-label">PREFIX LENGTH SCALE — CLICK TO CALCULATE</div>
+  <div id="cidr-scale"></div>
+
+  <!-- Subnet breakdown visual -->
+  <div class="sec-label" style="margin-top:16px">HOW SUBNETTING WORKS — BINARY MASK</div>
+  <div id="subnet-vis"></div>
+
+  <!-- 0.0.0.0/0 warning -->
+  <div class="warn" style="margin-top:16px">
+    <div class="warn-t">⚠ DANGER: 0.0.0.0/0 in AWS Security Groups</div>
+    <div class="warn-b">
+      <code style="color:var(--o)">0.0.0.0/0</code> = ALL 4.29 billion IPs on earth. Using this as a source rule means
+      <strong style="color:#ccc">every device on the internet</strong> can reach that port.<br><br>
+      Safe: port 443 (HTTPS) with 0.0.0.0/0<br>
+      Catastrophic: port 3306 (MySQL), 5432 (Postgres), 6379 (Redis) with 0.0.0.0/0
+    </div>
+  </div>
+
+  <div class="sec-label" style="margin-top:20px">KALI TERMINAL — IPCALC & SUBNET TOOLS</div>
+  <div class="term">
+    <div class="term-bar">
+      <div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div>
+      <div class="term-title">root@kali:~# cidr-lab</div>
+      <div class="term-badge">LIVE</div>
+    </div>
+    <div class="term-body" id="t-cidr">
+      <div class="t th">┌──(root㉿kali)-[~]</div>
+      <div class="t th">└─# CIDR & Subnet Lab — type <span style="color:var(--g)">help</span></div>
+      <div class="t to">Try: ipcalc 10.0.0.0/8  |  nmap -sn 192.168.1.0/24  |  route -n</div>
+    </div>
+    <div class="term-input">
+      <span class="term-prompt">root@kali:~#</span>
+      <input id="c-cidr" placeholder="ipcalc 192.168.1.0/24" onkeydown="termCmd(event,'cidr')">
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════ IPv6 ═══════ -->
+<section id="sec-ipv6">
+<div class="panel">
+  <div class="panel-head">
+    <div class="panel-num">03</div>
+    <div class="panel-title" style="color:var(--p)">IPv6 — The Future of IP Addressing</div>
+    <div class="panel-sub">128-BIT ADDRESS SPACE</div>
+  </div>
+
+  <!-- Why IPv6 -->
+  <div class="g2" style="margin-bottom:16px">
+    <div class="card" style="border-color:#1a0a3a">
+      <div class="sec-label">IPv4 — DYING</div>
+      <div style="color:var(--o);font-size:28px;font-weight:900;font-family:var(--head);margin:8px 0">192.168.1.1</div>
+      <div style="color:#5a3020;font-size:11px;line-height:1.9">
+        32-bit address space<br>
+        4,294,967,296 total IPs<br>
+        IANA exhausted: Feb 3, 2011<br>
+        Requires NAT for private nets<br>
+        Complex routing tables
+      </div>
+    </div>
+    <div class="card" style="border-color:#1a0a3a">
+      <div class="sec-label">IPv6 — THE FUTURE</div>
+      <div style="color:var(--p);font-size:16px;font-weight:900;font-family:var(--head);margin:8px 0;word-break:break-all">2001:db8:85a3::8a2e:370:7334</div>
+      <div style="color:#4a3a6a;font-size:11px;line-height:1.9">
+        128-bit address space<br>
+        340 undecillion IPs (3.4×10³⁸)<br>
+        No NAT — every device gets real IP<br>
+        Built-in IPSec security<br>
+        Auto-configuration (SLAAC)
+      </div>
+    </div>
+  </div>
+
+  <!-- IPv6 address visualizer -->
+  <div class="sec-label">IPv6 ADDRESS BREAKDOWN — 8 GROUPS OF 16-BIT HEX</div>
+  <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+    <input class="inp" id="ipv6-inp" style="flex:1;min-width:200px" value="2001:0db8:85a3:0000:0000:8a2e:0370:7334">
+    <button class="btn" style="background:var(--p)" onclick="parseIPv6()">PARSE</button>
+  </div>
+  <div id="ipv6-groups"></div>
+  <div id="ipv6-info" style="margin-top:10px"></div>
+
+  <!-- IPv6 vs IPv4 scale -->
+  <div class="sec-label" style="margin-top:16px">ADDRESS SPACE COMPARISON</div>
+  <svg id="ipv6-compare-svg" width="100%" height="120" viewBox="0 0 700 120"></svg>
+
+  <!-- IPv6 types -->
+  <div class="sec-label" style="margin-top:16px">IPv6 ADDRESS TYPES</div>
+  <div id="ipv6-types"></div>
+
+  <div class="sec-label" style="margin-top:16px">KALI TERMINAL — IPv6 TOOLS</div>
+  <div class="term">
+    <div class="term-bar">
+      <div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div>
+      <div class="term-title">root@kali:~# ipv6-lab</div>
+      <div class="term-badge">LIVE</div>
+    </div>
+    <div class="term-body" id="t-ipv6">
+      <div class="t th">┌──(root㉿kali)-[~]</div>
+      <div class="t th">└─# IPv6 Lab — type <span style="color:var(--p)">help</span></div>
+      <div class="t to">Try: ip -6 addr  |  ping6 ::1  |  ipv6calc 2001:db8::/32  |  why ipv6</div>
+    </div>
+    <div class="term-input">
+      <span class="term-prompt" style="color:var(--p)">root@kali:~#</span>
+      <input id="c-ipv6" placeholder="ip -6 addr show" onkeydown="termCmd(event,'ipv6')" style="color:var(--p)">
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════ TCP/UDP ═══════ -->
+<section id="sec-tcp">
+<div class="panel">
+  <div class="panel-head">
+    <div class="panel-num">04</div>
+    <div class="panel-title" style="color:var(--c)">TCP / UDP — Transport Layer Protocols</div>
+    <div class="panel-sub">LAYER 4</div>
+  </div>
+
+  <div class="g2" style="margin-bottom:14px" id="tcp-udp-cards"></div>
+
+  <!-- TCP 3-way handshake ANIMATED -->
+  <div class="sec-label">TCP 3-WAY HANDSHAKE — ANIMATED</div>
+  <div style="display:flex;gap:8px;margin-bottom:14px;align-items:center;">
+    <button class="btn" onclick="hsNext()">NEXT STEP ▶</button>
+    <button class="btn-o" style="color:var(--c);border-color:#0a2a3a" onclick="hsReset()">RESET</button>
+    <span id="hs-status" style="color:#1e4a5a;font-size:11px;margin-left:8px"></span>
+  </div>
+
+  <!-- Handshake SVG -->
+  <div style="overflow-x:auto;margin-bottom:16px">
+    <svg id="hs-svg" width="100%" height="260" viewBox="0 0 700 260" style="min-width:500px"></svg>
+  </div>
+
+  <!-- TCP flags -->
+  <div class="sec-label">TCP FLAGS</div>
+  <div id="tcp-flags"></div>
+
+  <!-- tcpdump simulation -->
+  <div class="sec-label" style="margin-top:16px">KALI TERMINAL — TCPDUMP / NETSTAT / SS</div>
+  <div class="term">
+    <div class="term-bar">
+      <div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div>
+      <div class="term-title">root@kali:~# tcp-lab</div>
+      <div class="term-badge">LIVE</div>
+    </div>
+    <div class="term-body" id="t-tcp">
+      <div class="t th">┌──(root㉿kali)-[~]</div>
+      <div class="t th">└─# TCP/UDP Lab — type <span style="color:var(--c)">help</span></div>
+      <div class="t to">Try: tcpdump -i eth0  |  netstat -tulnp  |  ss -tunap  |  handshake</div>
+    </div>
+    <div class="term-input">
+      <span class="term-prompt" style="color:var(--c)">root@kali:~#</span>
+      <input id="c-tcp" placeholder="tcpdump -i eth0 port 80" onkeydown="termCmd(event,'tcp')" style="color:var(--c)">
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════ PORTS ═══════ -->
+<section id="sec-ports">
+<div class="panel">
+  <div class="panel-head">
+    <div class="panel-num">05</div>
+    <div class="panel-title" style="color:var(--y)">PORTS — Network Service Endpoints</div>
+    <div class="panel-sub">0–65535</div>
+  </div>
+
+  <!-- Port heat map -->
+  <div class="sec-label">PORT HEAT MAP — colour = risk level (click for details)</div>
+  <div class="port-heat" id="port-heat"></div>
+
+  <!-- Port detail -->
+  <div id="port-detail" style="display:none;margin-top:14px;" class="card"></div>
+
+  <!-- Port search -->
+  <div class="sec-label" style="margin-top:16px">PORT REFERENCE — SEARCH</div>
+  <input class="inp" id="port-search" style="width:100%;margin-bottom:10px" placeholder="search port number or service name..." oninput="filterPorts()">
+  <div id="port-list"></div>
+
+  <!-- Kali port scan -->
+  <div class="sec-label" style="margin-top:16px">KALI TERMINAL — NMAP PORT SCANNING</div>
+  <div class="term">
+    <div class="term-bar">
+      <div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div>
+      <div class="term-title">root@kali:~# nmap-lab</div>
+      <div class="term-badge">LIVE</div>
+    </div>
+    <div class="term-body" id="t-ports">
+      <div class="t th">┌──(root㉿kali)-[~]</div>
+      <div class="t th">└─# Port Scanning Lab — type <span style="color:var(--y)">help</span></div>
+      <div class="t to">Try: nmap -sV 192.168.1.1  |  nmap -p 22,80,443 target  |  nc -zv target 80</div>
+    </div>
+    <div class="term-input">
+      <span class="term-prompt" style="color:var(--y)">root@kali:~#</span>
+      <input id="c-ports" placeholder="nmap -sV 192.168.1.1" onkeydown="termCmd(event,'ports')" style="color:var(--y)">
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════ DNS ═══════ -->
+<section id="sec-dns">
+<div class="panel">
+  <div class="panel-head">
+    <div class="panel-num">06</div>
+    <div class="panel-title" style="color:var(--o)">DNS — Domain Name System</div>
+    <div class="panel-sub">THE INTERNET'S PHONEBOOK</div>
+  </div>
+
+  <!-- DNS resolution tree SVG -->
+  <div class="sec-label">DNS RESOLUTION TREE — ANIMATED</div>
+  <div style="display:flex;gap:8px;margin-bottom:12px;">
+    <button class="btn" style="background:var(--o)" onclick="dnsTreeNext()">NEXT STEP ▶</button>
+    <button class="btn-o" style="color:var(--o);border-color:#2a1000" onclick="dnsTreeReset()">RESET</button>
+    <span id="dns-tree-status" style="color:#4a2010;font-size:11px;align-self:center;margin-left:8px"></span>
+  </div>
+  <div style="overflow-x:auto;margin-bottom:16px">
+    <svg id="dns-tree-svg" width="100%" height="300" viewBox="0 0 700 300" style="min-width:500px"></svg>
+  </div>
+
+  <!-- DNS Record types visual -->
+  <div class="sec-label">DNS RECORD TYPES — VISUAL</div>
+  <div id="dns-records-vis"></div>
+
+  <!-- DNS lookup simulator -->
+  <div class="sec-label" style="margin-top:16px">DNS LOOKUP SIMULATOR</div>
+  <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+    <input class="inp" id="dns-q" style="flex:1;min-width:160px" value="google.com">
+    <select class="inp" id="dns-type" style="width:80px"><option>A</option><option>AAAA</option><option>MX</option><option>TXT</option><option>NS</option><option>CNAME</option></select>
+    <button class="btn" style="background:var(--o)" onclick="dnsLookup()">RESOLVE</button>
+  </div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px" id="dns-domain-chips"></div>
+  <div id="dns-result"></div>
+
+  <!-- Kali DNS tools -->
+  <div class="sec-label" style="margin-top:16px">KALI TERMINAL — DIG / NSLOOKUP / DNSENUM</div>
+  <div class="term">
+    <div class="term-bar">
+      <div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div>
+      <div class="term-title">root@kali:~# dns-lab</div>
+      <div class="term-badge">LIVE</div>
+    </div>
+    <div class="term-body" id="t-dns">
+      <div class="t th">┌──(root㉿kali)-[~]</div>
+      <div class="t th">└─# DNS Lab — type <span style="color:var(--o)">help</span></div>
+      <div class="t to">Try: dig google.com A  |  nslookup cloudflare.com  |  dnsenum example.com</div>
+    </div>
+    <div class="term-input">
+      <span class="term-prompt" style="color:var(--o)">root@kali:~#</span>
+      <input id="c-dns" placeholder="dig google.com A @8.8.8.8" onkeydown="termCmd(event,'dns')" style="color:var(--o)">
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════ HTTP ═══════ -->
+<section id="sec-http">
+<div class="panel">
+  <div class="panel-head">
+    <div class="panel-num">07</div>
+    <div class="panel-title" style="color:var(--p)">HTTP & HTTPS — Application Layer</div>
+    <div class="panel-sub">LAYER 7</div>
+  </div>
+
+  <!-- HTTP vs HTTPS visual -->
+  <div class="sec-label">HTTP vs HTTPS — WHAT CHANGES WITH TLS</div>
+  <svg id="tls-svg" width="100%" height="180" viewBox="0 0 700 180" style="margin-bottom:16px"></svg>
+
+  <!-- Methods + Status split -->
+  <div class="g2" style="margin-bottom:16px">
+    <div>
+      <div class="sec-label">HTTP METHODS</div>
+      <div id="http-methods"></div>
+    </div>
+    <div>
+      <div class="sec-label">STATUS CODES</div>
+      <div class="status-grid" id="status-codes"></div>
+    </div>
+  </div>
+
+  <!-- Curl simulator -->
+  <div class="sec-label">CURL REQUEST BUILDER</div>
+  <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+    <select class="inp" id="curl-method" style="width:90px"><option>GET</option><option>POST</option><option>PUT</option><option>DELETE</option><option>PATCH</option></select>
+    <input class="inp" id="curl-url" style="flex:1;min-width:160px" value="https://api.example.com/users">
+    <button class="btn" style="background:var(--p)" onclick="runCurl()">SEND REQUEST</button>
+  </div>
+  <div id="curl-result"></div>
+
+  <!-- Security Headers -->
+  <div class="sec-label" style="margin-top:16px">SECURITY HEADERS</div>
+  <div id="security-headers"></div>
+
+  <div class="sec-label" style="margin-top:16px">KALI TERMINAL — CURL / BURPSUITE STYLE</div>
+  <div class="term">
+    <div class="term-bar">
+      <div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div>
+      <div class="term-title">root@kali:~# http-lab</div>
+      <div class="term-badge">LIVE</div>
+    </div>
+    <div class="term-body" id="t-http">
+      <div class="t th">┌──(root㉿kali)-[~]</div>
+      <div class="t th">└─# HTTP Lab — type <span style="color:var(--p)">help</span></div>
+      <div class="t to">Try: curl -v https://google.com  |  wget target.com  |  nikto -h target</div>
+    </div>
+    <div class="term-input">
+      <span class="term-prompt" style="color:var(--p)">root@kali:~#</span>
+      <input id="c-http" placeholder="curl -v https://api.example.com" onkeydown="termCmd(event,'http')" style="color:var(--p)">
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════ CHALLENGES ═══════ -->
+<section id="sec-challenges">
+<div class="panel">
+  <div class="panel-head">
+    <div class="panel-num">08</div>
+    <div class="panel-title" style="color:var(--p)">⚔ LIVE CHALLENGES</div>
+    <div class="panel-sub">TEST YOUR KNOWLEDGE</div>
+  </div>
+
+  <!-- Score bar -->
+  <div class="score-bar">
+    <div>
+      <div class="score-val"><span id="score-val">0</span> XP</div>
+      <div class="score-lbl">EARNED</div>
+    </div>
+    <div class="xp-bar"><div class="xp-fill" id="xp-fill" style="width:0%"></div></div>
+    <div>
+      <div class="score-val" style="color:var(--c)"><span id="solved-val">0</span>/10</div>
+      <div class="score-lbl">SOLVED</div>
+    </div>
+  </div>
+
+  <!-- Challenge terminal -->
+  <div class="sec-label">CHALLENGE TERMINAL — SOLVE BY TYPING COMMANDS</div>
+  <div class="term" style="margin-bottom:20px">
+    <div class="term-bar">
+      <div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div>
+      <div class="term-title">root@kali:~# challenge-mode</div>
+      <div class="term-badge" style="color:var(--p);border-color:rgba(176,106,255,.3)">CHALLENGE MODE</div>
+    </div>
+    <div class="term-body" id="t-ch" style="min-height:160px">
+      <div class="t th">┌──(root㉿kali)-[challenge-mode]</div>
+      <div class="t th">└─# Welcome to Challenge Mode</div>
+      <div class="t to">Use this terminal to answer challenges. Type commands, submit answers.</div>
+      <div class="t to">Type: <span style="color:var(--p)">challenge 1</span> to start  |  <span style="color:var(--p)">hint</span> for a hint  |  <span style="color:var(--p)">answer &lt;your-answer&gt;</span> to submit</div>
+    </div>
+    <div class="term-input">
+      <span class="term-prompt" style="color:var(--p)">challenge@kali:~#</span>
+      <input id="c-ch" placeholder="challenge 1" onkeydown="termCmd(event,'ch')">
+    </div>
+  </div>
+
+  <!-- Challenge cards -->
+  <div id="challenge-cards"></div>
+</div>
+</section>
+
+</main>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════
+
+const PORTS_DATA=[
+  {port:20,name:'FTP-DATA',desc:'FTP data transfer',risk:'high',proto:'TCP'},
+  {port:21,name:'FTP',desc:'File Transfer Protocol',risk:'high',proto:'TCP'},
+  {port:22,name:'SSH',desc:'Secure Shell — encrypted remote access',risk:'med',proto:'TCP'},
+  {port:23,name:'TELNET',desc:'Unencrypted remote login — dangerous',risk:'high',proto:'TCP'},
+  {port:25,name:'SMTP',desc:'Email sending protocol',risk:'med',proto:'TCP'},
+  {port:53,name:'DNS',desc:'Domain Name System queries',risk:'med',proto:'UDP/TCP'},
+  {port:67,name:'DHCP',desc:'Dynamic Host Config Protocol',risk:'low',proto:'UDP'},
+  {port:80,name:'HTTP',desc:'Unencrypted web traffic',risk:'med',proto:'TCP'},
+  {port:110,name:'POP3',desc:'Email retrieval (Post Office Protocol)',risk:'med',proto:'TCP'},
+  {port:143,name:'IMAP',desc:'Email retrieval (Internet Message Access)',risk:'med',proto:'TCP'},
+  {port:443,name:'HTTPS',desc:'Encrypted web traffic (TLS)',risk:'low',proto:'TCP'},
+  {port:445,name:'SMB',desc:'Windows file sharing — WannaCry target',risk:'high',proto:'TCP'},
+  {port:3306,name:'MySQL',desc:'MySQL database — never expose publicly',risk:'high',proto:'TCP'},
+  {port:3389,name:'RDP',desc:'Windows Remote Desktop Protocol',risk:'high',proto:'TCP'},
+  {port:5432,name:'Postgres',desc:'PostgreSQL database server',risk:'high',proto:'TCP'},
+  {port:6379,name:'Redis',desc:'Redis cache — no auth by default',risk:'high',proto:'TCP'},
+  {port:8080,name:'HTTP-ALT',desc:'Alternate HTTP / dev servers',risk:'med',proto:'TCP'},
+  {port:8443,name:'HTTPS-ALT',desc:'Alternate HTTPS / app servers',risk:'low',proto:'TCP'},
+  {port:27017,name:'MongoDB',desc:'MongoDB — infamous open instances',risk:'high',proto:'TCP'},
+];
+
+const DNS_DB={
+  'google.com':    {A:'142.250.80.46',AAAA:'2607:f8b0:4004:c09::8a',MX:'aspmx.l.google.com',TXT:'v=spf1 include:_spf.google.com ~all',NS:'ns1.google.com'},
+  'cloudflare.com':{A:'104.16.132.229',AAAA:'2606:4700::6810:84e5',MX:'mail.cloudflare.com',TXT:'v=spf1 ip4:199.27.128.0/21 ~all',NS:'ns3.cloudflare.com'},
+  'github.com':    {A:'140.82.121.4',AAAA:'2606:50c0:8000::153',MX:'aspmx.l.google.com',TXT:'v=spf1 ip4:192.30.252.0/22 ~all',NS:'ns-520.awsdns-01.net'},
+  'amazon.com':    {A:'205.251.242.103',AAAA:'2600:1f18:7fff:f800::1',MX:'smtp-in.amazon.com',TXT:'v=spf1 include:spf1.amazon.com ~all',NS:'pdns1.ultradns.net'},
+  'example.com':   {A:'93.184.216.34',AAAA:'2606:2800:220:1:248:1893:25c8:1946',MX:'mail.example.com',TXT:'v=spf1 -all',NS:'a.iana-servers.net'},
+};
+
+const CHALLENGES=[
+  {id:1,title:'Subnet Calculator',diff:'EASY',color:'#00ff88',xp:100,
+   q:'What is the broadcast address of the network 192.168.10.0/28?',
+   hint:'A /28 has 4 host bits → 16 addresses. Network=192.168.10.0, Broadcast=Network+15',
+   ans:['192.168.10.15'],
+   explain:'192.168.10.0/28 → 16 IPs total (10.0 to 10.15). Broadcast = last IP = 192.168.10.15'},
+  {id:2,title:'CIDR Notation',diff:'EASY',color:'#00e5ff',xp:100,
+   q:'How many usable host IPs does a /26 subnet provide?',
+   hint:'/26 → 6 host bits → 2^6=64 IPs. Subtract 2 (network+broadcast)',
+   ans:['62'],
+   explain:'2^(32-26) = 2^6 = 64 total. Minus network (x.x.x.0) and broadcast (x.x.x.63) = 62 usable hosts.'},
+  {id:3,title:'Private IP Ranges',diff:'EASY',color:'#ffe066',xp:100,
+   q:'Which RFC defines the private IP ranges 10.x.x.x, 172.16.x.x, and 192.168.x.x?',
+   hint:'RFC 19__ — look at the private range standards from the 1990s',
+   ans:['rfc 1918','1918','rfc1918'],
+   explain:'RFC 1918 (1996) defines three blocks of private IPv4 address space reserved for internal networks.'},
+  {id:4,title:'Default Gateway',diff:'EASY',color:'#ff6b35',xp:150,
+   q:'What 0.0.0.0/0 means in a routing table?',
+   hint:'0.0.0.0/0 matches every possible IP address — it is the most general route',
+   ans:['default route','all ips','any ip','entire internet','0.0.0.0/0'],
+   explain:'0.0.0.0/0 is the default route — it matches ALL IP addresses. Traffic not matching specific routes goes here (to the internet gateway).'},
+  {id:5,title:'TCP Handshake',diff:'MEDIUM',color:'#b06aff',xp:150,
+   q:'Name the three packets in a TCP connection setup in order.',
+   hint:'Remember: SYN → ? → ? Three letters each',
+   ans:['syn syn-ack ack','syn synack ack','syn, syn-ack, ack'],
+   explain:'1. SYN (client wants to connect) → 2. SYN-ACK (server agrees) → 3. ACK (client confirms). Connection is now established.'},
+  {id:6,title:'DNS Record Types',diff:'MEDIUM',color:'#ff6b35',xp:150,
+   q:'Which DNS record type creates an alias from one domain to another?',
+   hint:'C_____ record. Not A, not MX...',
+   ans:['cname','cname record'],
+   explain:'CNAME (Canonical Name) record creates an alias — e.g. www.example.com → example.com. The DNS resolver follows the chain until it finds an A record.'},
+  {id:7,title:'Port Knowledge',diff:'MEDIUM',color:'#00e5ff',xp:150,
+   q:'A server has port 3306 open to 0.0.0.0/0 in its AWS Security Group. What service is exposed and what is the risk?',
+   hint:'Port 3306 = a popular open-source relational database',
+   ans:['mysql','mysql database','mysql exposed'],
+   explain:'Port 3306 is MySQL. Exposing it to 0.0.0.0/0 means any IP on earth can attempt to connect and brute-force credentials. This has caused countless data breaches.'},
+  {id:8,title:'HTTP Status',diff:'MEDIUM',color:'#b06aff',xp:150,
+   q:'You make a request but the resource requires you to log in first. What HTTP status code do you get?',
+   hint:'4xx range. Not 403 (which means you ARE authenticated but not allowed). This means NOT authenticated.',
+   ans:['401','401 unauthorized'],
+   explain:'401 Unauthorized means the client is not authenticated. 403 Forbidden means authenticated but not authorized. Common confusion in interviews!'},
+  {id:9,title:'Subnet Challenge',diff:'HARD',color:'#ff3b3b',xp:200,
+   q:'You have 192.168.0.0/24. You need to create 4 equal subnets. What prefix length do you use?',
+   hint:'To split /24 into 4 subnets you need 2 more bits (2^2=4). Add 2 to 24.',
+   ans:['/26','26'],
+   explain:'192.168.0.0/24 has 8 host bits. To create 4 subnets: borrow 2 bits (2^2=4). /24+2=/26. Each /26 has 64 IPs (62 usable). The 4 subnets: .0/26, .64/26, .128/26, .192/26'},
+  {id:10,title:'DNS Attack',diff:'HARD',color:'#ff3b3b',xp:200,
+   q:'A DNS A record points dev.company.com to a deleted S3 bucket. An attacker creates a new S3 bucket with the same name. What attack is this?',
+   hint:'The DNS record is "hanging" — pointing to something that no longer exists',
+   ans:['subdomain takeover','dangling dns','dns takeover','subdomain hijacking'],
+   explain:'Subdomain Takeover (also: Dangling DNS). The CNAME/A record still points to a removed cloud resource. Attacker claims that resource and serves malicious content from the legitimate subdomain.'},
+];
+
+// ═══════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════
+
+document.querySelectorAll('.nav-tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    const sec=document.getElementById('sec-'+tab.dataset.sec);
+    if(sec) sec.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+});
+
+// Intersection observer
+const secObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const id=e.target.id.replace('sec-','');
+      document.querySelectorAll('.nav-tab').forEach(t=>{
+        t.classList.toggle('active',t.dataset.sec===id);
+      });
+    }
+  });
+},{threshold:.2});
+document.querySelectorAll('section[id]').forEach(s=>secObs.observe(s));
+
+// ═══════════════════════════════════════════════════════
+// IPv4
+// ═══════════════════════════════════════════════════════
+
+let currentIP=[192,168,1,1];
+function toBin(n){return n.toString(2).padStart(8,'0');}
+
+function initOctets(){
+  const el=document.getElementById('octet-boxes');
+  el.innerHTML=currentIP.map((val,i)=>`
+    <div class="octet-box" onclick="editOctet(${i})" id="obox-${i}">
+      <div class="octet-val" id="oval-${i}">${val}</div>
+      <div class="octet-bin" id="obin-${i}">${toBin(val)}</div>
+      <div class="octet-lbl">OCTET ${i+1}</div>
+    </div>`).join('');
+  updateFullBin();
+}
+
+function editOctet(i){
+  const v=parseInt(prompt(`Enter value for Octet ${i+1} (0-255):`,currentIP[i]));
+  if(!isNaN(v)&&v>=0&&v<=255){
+    currentIP[i]=v;
+    document.getElementById('oval-'+i).textContent=v;
+    document.getElementById('obin-'+i).textContent=toBin(v);
+    updateFullBin();
+  }
+}
+function updateFullBin(){
+  document.getElementById('full-binary').textContent=
+    currentIP.map(toBin).join(' . ');
+}
+
+function drawPacketHeader(){
+  const svg=document.getElementById('packet-svg');
+  const fields=[
+    {label:'Version',sub:'4 bits',color:'#00ff88',w:50},
+    {label:'IHL',sub:'4 bits',color:'#00cc6a',w:50},
+    {label:'DSCP',sub:'6b',color:'#00e5ff',w:60},
+    {label:'ECN',sub:'2b',color:'#00b8cc',w:40},
+    {label:'Total Length',sub:'16 bits',color:'#ffe066',w:120},
+    {label:'Identification',sub:'16 bits',color:'#ff6b35',w:120},
+    {label:'Flags',sub:'3b',color:'#b06aff',w:50},
+    {label:'Fragment Offset',sub:'13 bits',color:'#9055cc',w:100},
+    {label:'TTL',sub:'8 bits',color:'#ff3b3b',w:70},
+    {label:'Protocol',sub:'8 bits',color:'#ff6b80',w:70},
+    {label:'Header Checksum',sub:'16 bits',color:'#febc2e',w:120},
+    {label:'Source IP',sub:'32 bits',color:'#00ff88',w:160},
+    {label:'Destination IP',sub:'32 bits',color:'#00e5ff',w:160},
+    {label:'Options',sub:'variable',color:'#555',w:100},
+    {label:'Data',sub:'payload',color:'#1a3a2a',w:180},
+  ];
+  let rows=[[],[],[]];
+  let w=0,row=0;
+  const ROW_W=800;
+  fields.forEach(f=>{
+    if(w+f.w>ROW_W){row++;w=0;}
+    if(row<3){rows[row].push({...f,x:w});w+=f.w;}
+  });
+  let html='';
+  rows.forEach((r,ri)=>{
+    r.forEach(f=>{
+      const y=ri*40+5;
+      html+=`<rect x="${f.x+1}" y="${y+1}" width="${f.w-2}" height="34" fill="${f.color}18" stroke="${f.color}44" stroke-width="1" rx="3"/>`;
+      html+=`<text x="${f.x+f.w/2}" y="${y+14}" text-anchor="middle" font-size="9" fill="${f.color}" font-family="'Share Tech Mono'">${f.label}</text>`;
+      html+=`<text x="${f.x+f.w/2}" y="${y+28}" text-anchor="middle" font-size="8" fill="${f.color}88" font-family="'Share Tech Mono'">${f.sub}</text>`;
+    });
+  });
+  svg.innerHTML=html;
+}
+
+function drawIPClasses(){
+  const svg=document.getElementById('class-svg');
+  const classes=[
+    {name:'A',range:'1-126',start:0,end:0.5,color:'#00ff88',note:'0xxxxxxx'},
+    {name:'B',range:'128-191',start:0.5,end:0.75,color:'#00e5ff',note:'10xxxxxx'},
+    {name:'C',range:'192-223',start:0.75,end:0.875,color:'#ffe066',note:'110xxxxx'},
+    {name:'D',range:'224-239',start:0.875,end:0.9375,color:'#ff6b35',note:'Multicast'},
+    {name:'E',range:'240-255',start:0.9375,end:1,color:'#b06aff',note:'Reserved'},
+  ];
+  const W=800,H=70;
+  let html='';
+  classes.forEach(c=>{
+    const x=c.start*W,w=(c.end-c.start)*W;
+    html+=`<rect x="${x+1}" y="10" width="${w-2}" height="40" fill="${c.color}15" stroke="${c.color}44" rx="3"/>`;
+    html+=`<text x="${x+w/2}" y="28" text-anchor="middle" font-size="12" font-weight="bold" fill="${c.color}" font-family="'Orbitron'">Class ${c.name}</text>`;
+    html+=`<text x="${x+w/2}" y="44" text-anchor="middle" font-size="9" fill="${c.color}88" font-family="'Share Tech Mono'">${c.range}</text>`;
+    html+=`<text x="${x+w/2}" y="65" text-anchor="middle" font-size="8" fill="${c.color}55" font-family="'Share Tech Mono'">${c.note}</text>`;
+  });
+  svg.innerHTML=html;
+}
+
+function initPrivateVis(){
+  const ranges=[
+    {range:'10.0.0.0/8',label:'CLASS A PRIVATE',note:'16,777,216 IPs',color:'var(--g)',pct:100},
+    {range:'172.16.0.0/12',label:'CLASS B PRIVATE',note:'1,048,576 IPs',color:'var(--c)',pct:6.25},
+    {range:'192.168.0.0/16',label:'CLASS C PRIVATE',note:'65,536 IPs',color:'var(--o)',pct:0.4},
+    {range:'127.0.0.0/8',label:'LOOPBACK',note:'localhost only',color:'var(--p)',pct:100},
+  ];
+  document.getElementById('private-vis').innerHTML=ranges.map(r=>`
+    <div style="display:flex;align-items:center;gap:12px;background:var(--bg3);border-radius:6px;padding:10px 14px;margin-bottom:6px;border-left:3px solid ${r.color};">
+      <span style="color:${r.color};font-family:var(--head);font-weight:bold;font-size:13px;width:160px;flex-shrink:0">${r.range}</span>
+      <div style="flex:1">
+        <div style="font-size:9px;color:#1e4030;letter-spacing:2px;margin-bottom:4px">${r.label}</div>
+        <div style="background:#0a1410;height:5px;border-radius:3px;overflow:hidden"><div style="height:100%;width:${r.pct}%;background:${r.color};border-radius:3px"></div></div>
+      </div>
+      <span style="color:#2a5040;font-size:11px;flex-shrink:0">${r.note}</span>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// CIDR
+// ═══════════════════════════════════════════════════════
+
+function cidrCalc(cidr){
+  try{
+    const[ip,prefix]=cidr.trim().split('/');
+    const bits=parseInt(prefix);
+    if(isNaN(bits)||bits<0||bits>32)return null;
+    const parts=ip.split('.').map(Number);
+    if(parts.length!==4||parts.some(p=>isNaN(p)||p<0||p>255))return null;
+    const ipInt=parts.reduce((a,o)=>(a<<8)+o,0)>>>0;
+    const mask=bits===0?0:(0xffffffff<<(32-bits))>>>0;
+    const net=(ipInt&mask)>>>0;
+    const bc=(net|~mask)>>>0;
+    const total=Math.pow(2,32-bits);
+    const usable=total>2?total-2:total;
+    const i2ip=n=>[(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255].join('.');
+    const binMask=toBin32(mask);
+    return{network:i2ip(net),broadcast:i2ip(bc),first:total>2?i2ip(net+1):i2ip(net),last:total>2?i2ip(bc-1):i2ip(bc),total,usable,mask:i2ip(mask),bits,binMask,prefix:bits};
+  }catch{return null;}
+}
+function toBin32(n){
+  let s='';
+  for(let i=31;i>=0;i--)s+=(n>>>i)&1;
+  return s;
+}
+
+function runCIDR(override){
+  const val=override||document.getElementById('cidr-inp').value.trim();
+  if(override)document.getElementById('cidr-inp').value=override;
+  const r=cidrCalc(val);
+  if(!r){document.getElementById('cidr-result-wrap').style.display='none';return;}
+  
+  const cols=[
+    {l:'Network Address',v:r.network,c:'var(--g)'},
+    {l:'Broadcast Address',v:r.broadcast,c:'var(--o)'},
+    {l:'First Usable Host',v:r.first,c:'var(--c)'},
+    {l:'Last Usable Host',v:r.last,c:'var(--c)'},
+    {l:'Subnet Mask',v:r.mask,c:'var(--p)'},
+    {l:'Wildcard Mask',v:invertIP(r.mask),c:'var(--y)'},
+    {l:'Total IPs',v:r.total.toLocaleString(),c:'var(--y)'},
+    {l:'Usable Hosts',v:r.usable.toLocaleString(),c:'var(--y)'},
+    {l:'IP Class',v:getIPClass(r.network),c:'var(--g)'},
+  ];
+  
+  document.getElementById('cidr-output').innerHTML=
+    `<div style="color:var(--c);margin-bottom:8px;font-size:11px">; CIDR: ${val}</div>`+
+    cols.map(c=>`<div style="display:flex;gap:8px;margin-bottom:3px"><span style="color:#1e4030;width:160px;flex-shrink:0">${c.l}</span><span style="color:${c.c}">${c.v}</span></div>`).join('')+
+    `<div style="margin-top:10px;border-top:1px solid #0d1e14;padding-top:8px">
+      <div style="color:#1e4030;font-size:9px;margin-bottom:4px">BINARY MASK (N=network, H=host)</div>
+      <div style="color:var(--g);font-size:11px;letter-spacing:1px;word-break:break-all">${r.binMask.slice(0,r.bits).replace(/./g,'N')+r.binMask.slice(r.bits).replace(/./g,'H')}</div>
+    </div>`;
+  
+  drawCIDRSVG(r);
+  document.getElementById('cidr-result-wrap').style.display='block';
+  drawSubnetVis(r);
+}
+
+function invertIP(ip){
+  return ip.split('.').map(o=>255-parseInt(o)).join('.');}
+function getIPClass(ip){
+  const f=parseInt(ip.split('.')[0]);
+  if(f<128)return'Class A';if(f<192)return'Class B';if(f<224)return'Class C';if(f<240)return'Class D (Multicast)';return'Class E (Reserved)';}
+
+function drawCIDRSVG(r){
+  const svg=document.getElementById('cidr-svg');
+  const W=380,H=160;
+  const total=r.total,usable=r.usable;
+  const pct=Math.min(usable/Math.max(total,256)*0.8,0.8)+0.1;
+  
+  let html=`<rect width="${W}" height="${H}" fill="#020508" rx="8"/>`;
+  // Full range bar
+  html+=`<text x="10" y="20" font-size="9" fill="#1e4030" font-family="'Share Tech Mono'">ADDRESS SPACE MAP</text>`;
+  html+=`<rect x="10" y="30" width="${W-20}" height="30" fill="#0a1410" rx="4"/>`;
+  html+=`<rect x="11" y="31" width="${(r.bits/32)*(W-22)}" height="28" fill="#00ff8822" rx="3"/>`;
+  html+=`<rect x="11" y="31" width="${(r.bits/32)*(W-22)-2}" height="28" fill="none" stroke="#00ff8866" stroke-width="1" rx="3"/>`;
+  html+=`<text x="10" y="76" font-size="9" fill="#1e4030" font-family="'Share Tech Mono'">/0 (all)</text>`;
+  html+=`<text x="${W-10}" y="76" text-anchor="end" font-size="9" fill="#1e4030" font-family="'Share Tech Mono'">/32 (1 host)</text>`;
+  html+=`<text x="${10+(r.bits/32)*(W-22)/2}" y="50" text-anchor="middle" font-size="10" fill="#00ff88" font-family="'Share Tech Mono'">/${r.bits}</text>`;
+  
+  // Usable range
+  html+=`<text x="10" y="100" font-size="9" fill="#1e4030" font-family="'Share Tech Mono'">USABLE HOST RANGE</text>`;
+  html+=`<rect x="10" y="108" width="${W-20}" height="16" fill="#0a1410" rx="3"/>`;
+  html+=`<rect x="11" y="109" width="${Math.max(4,(usable/4294967296)*(W-22))}" height="14" fill="linear-gradient(90deg,#00ff88,#00e5ff)" rx="2"/>`;
+  html+=`<rect x="11" y="109" width="${Math.max(4,(usable/4294967296)*(W-22))}" height="14" fill="#00ff8844" rx="2"/>`;
+  html+=`<text x="10" y="140" font-size="9" fill="#1e4030" font-family="'Share Tech Mono'">${r.first}</text>`;
+  html+=`<text x="${W-10}" y="140" text-anchor="end" font-size="9" fill="#1e4030" font-family="'Share Tech Mono'">${r.last}</text>`;
+  html+=`<text x="${W/2}" y="154" text-anchor="middle" font-size="9" fill="#00ff88" font-family="'Share Tech Mono'">${r.usable.toLocaleString()} usable hosts</text>`;
+  
+  svg.innerHTML=html;
+}
+
+function drawSubnetVis(r){
+  const bits=r.bits;
+  const netBits=toBin32((0xffffffff<<(32-bits))>>>0).slice(0,bits);
+  const hostBits=32-bits;
+  document.getElementById('subnet-vis').innerHTML=`
+    <div style="background:var(--bg3);border-radius:8px;padding:14px 16px;border:1px solid #0d1e14">
+      <div style="font-size:9px;color:#1e4030;letter-spacing:2px;margin-bottom:10px">32-BIT SUBNET MASK BREAKDOWN</div>
+      <div style="display:flex;gap:2px;flex-wrap:wrap;margin-bottom:10px">
+        ${Array.from({length:32}).map((_,i)=>`
+          <div style="width:22px;height:22px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;
+            background:${i<bits?'rgba(0,255,136,0.15)':'rgba(255,107,53,0.1)'};
+            border:1px solid ${i<bits?'rgba(0,255,136,0.3)':'rgba(255,107,53,0.2)'};
+            color:${i<bits?'var(--g)':'var(--o)'}">1</div>
+        `).join('')}
+      </div>
+      <div style="display:flex;gap:20px;font-size:11px">
+        <span><span style="color:var(--g)">■</span> Network bits: <strong style="color:var(--g)">${bits}</strong></span>
+        <span><span style="color:var(--o)">■</span> Host bits: <strong style="color:var(--o)">${hostBits}</strong></span>
+        <span style="color:#1e4030">→ ${Math.pow(2,hostBits).toLocaleString()} total IPs</span>
+      </div>
+    </div>`;
+}
+
+function initCIDRScale(){
+  const rows=[[0,'4.3B','Entire internet'],[8,'16.7M','Large cloud/ISP block'],[16,'65,536','Enterprise subnet'],[20,'4,096','Medium deployment'],[24,'256','Typical subnet'],[28,'16','AWS default VPC subnet'],[30,'4','Point-to-point link'],[32,'1','Single host route']];
+  document.getElementById('cidr-scale').innerHTML=rows.map(([p,c,n])=>`
+    <div class="cidr-scale-row" onclick="document.getElementById('cidr-inp').value='10.0.0.0/${p}';runCIDR()">
+      <span class="cs-tag">/${p}</span>
+      <div class="cs-bg"><div class="cs-fill" style="width:${Math.max(3,(32-p)/32*100)}%"></div></div>
+      <span class="cs-count">${c}</span>
+      <span class="cs-note">${n}</span>
+    </div>`).join('');
+  
+  const chips=['10.0.0.0/8','172.16.0.0/12','192.168.1.0/24','10.10.0.0/16','192.168.100.0/28','8.8.8.8/32'];
+  document.getElementById('cidr-chips').innerHTML=chips.map(c=>`
+    <button class="chip" style="color:var(--c)" onclick="document.getElementById('cidr-inp').value='${c}';runCIDR()">${c}</button>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// IPv6
+// ═══════════════════════════════════════════════════════
+
+function parseIPv6(){
+  const raw=document.getElementById('ipv6-inp').value.trim();
+  const expanded=expandIPv6(raw);
+  if(!expanded){document.getElementById('ipv6-groups').innerHTML='<div style="color:var(--r)">Invalid IPv6 address</div>';return;}
+  const groups=expanded.split(':');
+  document.getElementById('ipv6-groups').innerHTML=`
+    <div class="ipv6-groups">`+groups.map((g,i)=>`
+      <div class="ipv6-grp">
+        <div class="ipv6-hex">${g.toUpperCase()}</div>
+        <div class="ipv6-dec">${parseInt(g,16)}</div>
+        <div style="font-size:8px;color:#2a1a4a;margin-top:1px">group ${i+1}</div>
+      </div>`).join(`<div style="color:#1a0a3a;font-size:18px;line-height:36px">:</div>`)+
+    `</div>`;
+  
+  const type=classifyIPv6(expanded);
+  document.getElementById('ipv6-info').innerHTML=`
+    <div class="card" style="border-color:#1a0a3a">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><div class="sec-label">TYPE</div><div style="color:var(--p)">${type}</div></div>
+        <div><div class="sec-label">COMPRESSED FORM</div><div style="color:var(--p)">${compressIPv6(expanded)}</div></div>
+        <div><div class="sec-label">BINARY BITS</div><div style="color:#3a2a5a;font-size:10px">128 bits total</div></div>
+        <div><div class="sec-label">FULL EXPANDED</div><div style="color:#3a2a5a;font-size:10px;word-break:break-all">${expanded}</div></div>
+      </div>
+    </div>`;
+}
+
+function expandIPv6(addr){
+  try{
+    if(addr.includes(':::')||addr.split('::').length>2)return null;
+    let parts=addr.split('::');
+    if(parts.length===2){
+      const l=parts[0]?parts[0].split(':'):[];
+      const r=parts[1]?parts[1].split(':'):[];
+      const fill=8-l.length-r.length;
+      parts=[...l,...Array(fill).fill('0000'),...r];
+    }else{parts=parts[0].split(':');}
+    if(parts.length!==8)return null;
+    return parts.map(p=>p.padStart(4,'0')).join(':');
+  }catch{return null;}
+}
+
+function compressIPv6(expanded){
+  return expanded.replace(/(^|:)(0{1,4}:){1,}(0{1,4})/,'::').replace(/:0{1,3}([0-9a-f])/g,':$1').replace(/^0{1,3}([0-9a-f])/,'$1');}
+
+function classifyIPv6(addr){
+  const a=addr.toLowerCase();
+  if(a.startsWith('fe80'))return'Link-Local (fe80::/10)';
+  if(a.startsWith('::1'))return'Loopback (::1)';
+  if(a.startsWith('ff'))return'Multicast (ff00::/8)';
+  if(a.startsWith('2001:db8'))return'Documentation (2001:db8::/32)';
+  if(a.startsWith('fc')||a.startsWith('fd'))return'Unique Local (fc00::/7)';
+  if(a.startsWith('2002'))return'6to4 Tunnel (2002::/16)';
+  return'Global Unicast (2000::/3)';
+}
+
+function drawIPv6Compare(){
+  const svg=document.getElementById('ipv6-compare-svg');
+  const W=700,H=120;
+  let html=`<rect width="${W}" height="${H}" fill="#020508" rx="8"/>`;
+  html+=`<text x="10" y="20" font-size="9" fill="#1e4030" font-family="'Share Tech Mono'">ADDRESS SPACE RELATIVE SCALE</text>`;
+  const ipv4W=(W-20)*0.00000000001;
+  html+=`<rect x="10" y="30" width="${W-20}" height="20" fill="#0a1410" rx="3"/>`;
+  html+=`<rect x="10" y="30" width="${Math.max(3,ipv4W)}" height="20" fill="#ff6b3544" rx="3"/>`;
+  html+=`<text x="${Math.max(20,10+ipv4W/2)}" y="44" font-size="9" fill="#ff6b35" font-family="'Share Tech Mono'">IPv4: 4.3B</text>`;
+  html+=`<rect x="10" y="58" width="${W-20}" height="20" fill="#b06aff22" rx="3"/>`;
+  html+=`<text x="${(W-20)/2}" y="72" text-anchor="middle" font-size="9" fill="#b06aff" font-family="'Share Tech Mono'">IPv6: 340 undecillion (3.4 × 10³⁸) — this bar would need to be 7.9 × 10²⁸ meters wide</text>`;
+  html+=`<text x="10" y="100" font-size="9" fill="#2a1a4a" font-family="'Share Tech Mono'">IPv6 is</text>`;
+  html+=`<text x="60" y="100" font-size="12" font-weight="bold" fill="#b06aff" font-family="'Orbitron'">79 OCTILLION</text>`;
+  html+=`<text x="200" y="100" font-size="9" fill="#2a1a4a" font-family="'Share Tech Mono'">times larger than IPv4</text>`;
+  svg.innerHTML=html;
+}
+
+function initIPv6Types(){
+  const types=[
+    {prefix:'::1/128',name:'Loopback',desc:'Equivalent to IPv4 127.0.0.1 — refers to local machine',c:'var(--g)'},
+    {prefix:'fe80::/10',name:'Link-Local',desc:'Auto-assigned on all IPv6 interfaces — not routable',c:'var(--c)'},
+    {prefix:'fc00::/7',name:'Unique Local',desc:'Private IPv6 — like RFC 1918 for IPv4',c:'var(--o)'},
+    {prefix:'ff00::/8',name:'Multicast',desc:'One-to-many delivery — replaces broadcast',c:'var(--p)'},
+    {prefix:'2000::/3',name:'Global Unicast',desc:'Globally routable — the real public IPv6 addresses',c:'var(--y)'},
+    {prefix:'2001:db8::/32',name:'Documentation',desc:'Reserved for examples and documentation only',c:'#666'},
+  ];
+  document.getElementById('ipv6-types').innerHTML=types.map(t=>`
+    <div style="display:flex;gap:12px;background:var(--bg3);border-radius:6px;padding:10px 14px;margin-bottom:6px;border-left:3px solid ${t.c}">
+      <span style="color:${t.c};font-family:var(--head);font-size:11px;width:120px;flex-shrink:0">${t.prefix}</span>
+      <div>
+        <div style="color:${t.c};font-size:12px;font-weight:bold;margin-bottom:2px">${t.name}</div>
+        <div style="color:#2a4030;font-size:11px">${t.desc}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// TCP/UDP & HANDSHAKE
+// ═══════════════════════════════════════════════════════
+
+function initTCPUDP(){
+  const cards=[
+    {name:'TCP',color:'var(--g)',icon:'🔒',traits:['Reliable delivery guaranteed','Ordered packet delivery','Error detection + correction','3-way handshake setup','Flow control & congestion control','Slower — overhead for reliability'],uses:['HTTP/HTTPS','SSH','FTP','SMTP','MySQL','PostgreSQL'],port:'varies'},
+    {name:'UDP',color:'var(--c)',icon:'⚡',traits:['No delivery guarantee','No ordering guarantee','No error correction','No handshake — fire & forget','Low latency — minimal overhead','Faster — no retransmission'],uses:['DNS (53)','VoIP','Video streaming','Online gaming','TFTP','QUIC (HTTP/3)'],port:'varies'},
+  ];
+  document.getElementById('tcp-udp-cards').innerHTML=cards.map(c=>`
+    <div class="card" style="border-color:${c.color}22">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <span style="font-size:24px">${c.icon}</span>
+        <span style="color:${c.color};font-size:22px;font-weight:900;font-family:var(--head)">${c.name}</span>
+      </div>
+      ${c.traits.map(t=>`<div style="color:#3a6040;font-size:12px;margin-bottom:4px;display:flex;gap:6px"><span style="color:${c.color};font-size:8px;margin-top:4px">▸</span>${t}</div>`).join('')}
+      <div style="margin-top:12px;padding-top:10px;border-top:1px solid #0d1e14">
+        <div class="sec-label">USED BY</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px">
+          ${c.uses.map(u=>`<span style="background:${c.color}11;border:1px solid ${c.color}33;border-radius:3px;padding:2px 7px;color:${c.color};font-size:10px">${u}</span>`).join('')}
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+let hsStep=0;
+function drawHSSVG(){
+  const svg=document.getElementById('hs-svg');
+  const W=700,H=260;
+  const cx=350,cy1=30,client=80,server=620;
+  
+  const steps=[
+    {from:client,to:server,y:80,label:'SYN',sub:'seq=100, flags=SYN',c:'#00ff88'},
+    {from:server,to:client,y:140,label:'SYN-ACK',sub:'seq=300, ack=101, flags=SYN|ACK',c:'#00e5ff'},
+    {from:client,to:server,y:200,label:'ACK',sub:'seq=101, ack=301, flags=ACK',c:'#ffe066'},
+  ];
+  
+  let html=``;
+  // Vertical lines
+  html+=`<line x1="${client}" y1="20" x2="${client}" y2="${H-20}" stroke="#0f2a1a" stroke-width="2" stroke-dasharray="4,4"/>`;
+  html+=`<line x1="${server}" y1="20" x2="${server}" y2="${H-20}" stroke="#0a2a3a" stroke-width="2" stroke-dasharray="4,4"/>`;
+  // Labels
+  html+=`<rect x="${client-50}" y="5" width="100" height="28" fill="#00ff8820" rx="6" stroke="#00ff8844"/>`;
+  html+=`<text x="${client}" y="23" text-anchor="middle" font-size="11" font-weight="bold" fill="#00ff88" font-family="'Orbitron'">CLIENT</text>`;
+  html+=`<rect x="${server-50}" y="5" width="100" height="28" fill="#00e5ff20" rx="6" stroke="#00e5ff44"/>`;
+  html+=`<text x="${server}" y="23" text-anchor="middle" font-size="11" font-weight="bold" fill="#00e5ff" font-family="'Orbitron'">SERVER</text>`;
+  
+  // Steps
+  steps.forEach((s,i)=>{
+    const op=hsStep>i?1:0.1;
+    const dir=s.from<s.to;
+    html+=`<g opacity="${op}" style="transition:opacity .4s">`;
+    // Arrow line
+    html+=`<line x1="${s.from+(dir?20:-20)}" y1="${s.y}" x2="${s.to+(dir?-20:20)}" y2="${s.y}" stroke="${s.c}" stroke-width="2"/>`;
+    // Arrowhead
+    const ax=s.to+(dir?-20:20),ay=s.y;
+    const dx=dir?-1:1;
+    html+=`<polygon points="${ax},${ay} ${ax+dx*12},${ay-6} ${ax+dx*12},${ay+6}" fill="${s.c}"/>`;
+    // Label
+    html+=`<rect x="${(s.from+s.to)/2-50}" y="${s.y-26}" width="100" height="20" fill="${s.c}15" rx="4"/>`;
+    html+=`<text x="${(s.from+s.to)/2}" y="${s.y-12}" text-anchor="middle" font-size="11" font-weight="bold" fill="${s.c}" font-family="'Orbitron'">${s.label}</text>`;
+    html+=`<text x="${(s.from+s.to)/2}" y="${s.y+20}" text-anchor="middle" font-size="9" fill="${s.c}88" font-family="'Share Tech Mono'">${s.sub}</text>`;
+    html+=`</g>`;
+  });
+  
+  if(hsStep>=3){
+    html+=`<rect x="${cx-120}" y="${H-46}" width="240" height="28" fill="#00ff8815" rx="6" stroke="#00ff8844"/>`;
+    html+=`<text x="${cx}" y="${H-28}" text-anchor="middle" font-size="11" fill="#00ff88" font-family="'Orbitron'">✓ CONNECTION ESTABLISHED</text>`;
+  }
+  
+  svg.innerHTML=html;
+}
+
+function hsNext(){
+  if(hsStep<3)hsStep++;
+  drawHSSVG();
+  const labels=['','Step 1: Client sends SYN →','Step 2: Server responds SYN-ACK ←','Step 3: Client sends ACK → Connection Open!'];
+  document.getElementById('hs-status').textContent=labels[hsStep]||'';
+}
+function hsReset(){hsStep=0;drawHSSVG();document.getElementById('hs-status').textContent='';}
+
+function initTCPFlags(){
+  const flags=[
+    {f:'SYN',c:'var(--g)',d:'Synchronize — initiate connection'},
+    {f:'ACK',c:'var(--c)',d:'Acknowledge — confirm received data'},
+    {f:'FIN',c:'var(--o)',d:'Finish — gracefully close connection'},
+    {f:'RST',c:'var(--r)',d:'Reset — abort connection immediately'},
+    {f:'PSH',c:'var(--p)',d:'Push — deliver data to app immediately'},
+    {f:'URG',c:'var(--y)',d:'Urgent — process this data first'},
+  ];
+  document.getElementById('tcp-flags').innerHTML=`<div class="g3">`+flags.map(f=>`
+    <div class="card" style="border-left:3px solid ${f.c}">
+      <div style="color:${f.c};font-family:var(--head);font-size:14px;font-weight:900;margin-bottom:4px">${f.f}</div>
+      <div style="color:#2a5040;font-size:11px">${f.d}</div>
+    </div>`).join('')+`</div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+// PORTS
+// ═══════════════════════════════════════════════════════
+
+let selectedPort=null;
+function initPortHeat(){
+  const heat=document.getElementById('port-heat');
+  heat.innerHTML=PORTS_DATA.map(p=>{
+    const c=p.risk==='high'?'#ff3b3b':p.risk==='med'?'#ffe066':'#00ff88';
+    const bg=p.risk==='high'?'#1a0505':p.risk==='med'?'#1a1200':'#051a0a';
+    return`<div class="ph-cell" style="border-color:${c}33;background:${bg}" onclick="showPortDetail(${p.port})">
+      <div class="ph-port" style="color:${c}">${p.port}</div>
+      <div class="ph-name">${p.name}</div>
+      <div class="tooltip">${p.name} — ${p.risk.toUpperCase()} RISK</div>
+    </div>`;
+  }).join('');
+}
+
+function showPortDetail(port){
+  const p=PORTS_DATA.find(x=>x.port===port);
+  if(!p)return;
+  const c=p.risk==='high'?'var(--r)':p.risk==='med'?'var(--y)':'var(--g)';
+  document.getElementById('port-detail').style.display='block';
+  document.getElementById('port-detail').innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="font-family:var(--head);font-size:28px;color:${c}">${p.port}</div>
+        <div>
+          <div style="color:${c};font-size:16px;font-weight:bold">${p.name}</div>
+          <div style="color:#3a6040;font-size:11px">${p.proto}</div>
+        </div>
+      </div>
+      <span class="badge" style="background:${p.risk==='high'?'#2a0000':p.risk==='med'?'#2a1a00':'#002a0a'};color:${c}">${p.risk.toUpperCase()} RISK</span>
+    </div>
+    <div style="color:#4a7a5a;font-size:12px;margin-bottom:10px">${p.desc}</div>
+    <div style="background:#020508;border-radius:6px;padding:10px 14px;font-size:11px;color:#3a6040;border:1px solid #081814">
+      <span style="color:#1e4030">$ </span>nmap -sV -p ${p.port} target.com
+    </div>`;
+}
+
+function filterPorts(){
+  const q=document.getElementById('port-search').value.toLowerCase();
+  const f=PORTS_DATA.filter(p=>p.port.toString().includes(q)||p.name.toLowerCase().includes(q)||p.desc.toLowerCase().includes(q));
+  const rC={high:'var(--r)',med:'var(--y)',low:'var(--g)'};
+  const rB={high:'#2a0000',med:'#2a1a00',low:'#002a0a'};
+  document.getElementById('port-list').innerHTML=f.map(p=>`
+    <div style="display:flex;align-items:center;gap:12px;background:var(--bg3);border-radius:6px;padding:9px 14px;margin-bottom:5px;border-left:3px solid ${rC[p.risk]};cursor:pointer;transition:background .15s" onmouseover="this.style.background='#0d1a14'" onmouseout="this.style.background='var(--bg3)'" onclick="showPortDetail(${p.port})">
+      <span style="color:${rC[p.risk]};font-weight:bold;font-size:14px;width:46px;flex-shrink:0">${p.port}</span>
+      <span style="color:var(--c);width:90px;flex-shrink:0;font-size:12px">${p.name}</span>
+      <span style="color:#3a5040;font-size:11px;flex:1">${p.desc}</span>
+      <span style="color:#2a4030;font-size:10px;flex-shrink:0">${p.proto}</span>
+      <span class="badge" style="background:${rB[p.risk]};color:${rC[p.risk]};flex-shrink:0">${p.risk.toUpperCase()}</span>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// DNS
+// ═══════════════════════════════════════════════════════
+
+let dnsTreeStep=0;
+const DNS_NODES=[
+  {id:'root',x:350,y:40,label:'Root NS',sub:'.',c:'#ffe066'},
+  {id:'tld',x:350,y:110,label:'.com TLD',sub:'Verisign',c:'#ff6b35'},
+  {id:'auth',x:200,y:190,label:'google.com NS',sub:'Google Auth',c:'#00e5ff'},
+  {id:'browser',x:120,y:270,label:'Browser',sub:'Your Computer',c:'#00ff88'},
+  {id:'resolver',x:500,y:190,label:'ISP Resolver',sub:'8.8.8.8',c:'#b06aff'},
+  {id:'answer',x:200,y:270,label:'142.250.80.46',sub:'A Record Answer',c:'#00ff88'},
+];
+const DNS_EDGES=[
+  {from:'browser',to:'resolver',label:'1. Who is google.com?',step:1},
+  {from:'resolver',to:'root',label:'2. Ask Root NS',step:2},
+  {from:'root',to:'tld',label:'3. Ask .com TLD',step:3},
+  {from:'tld',to:'auth',label:'4. Ask Google NS',step:4},
+  {from:'auth',to:'answer',label:'5. ✓ 142.250.80.46',step:5},
+];
+
+function dnsTreeReset(){dnsTreeStep=0;drawDNSTree();}
+function dnsTreeNext(){if(dnsTreeStep<5)dnsTreeStep++;drawDNSTree();document.getElementById('dns-tree-status').textContent=`Step ${dnsTreeStep}/5`;}
+
+function drawDNSTree(){
+  const svg=document.getElementById('dns-tree-svg');
+  const W=700,H=300;
+  let html=``;
+  
+  // Edges first
+  DNS_EDGES.forEach(e=>{
+    const from=DNS_NODES.find(n=>n.id===e.from);
+    const to=DNS_NODES.find(n=>n.id===e.to);
+    const op=dnsTreeStep>=e.step?1:0.05;
+    html+=`<line x1="${from.x}" y1="${from.y}" x2="${to.x}" y2="${to.y}" stroke="${to.c}" stroke-width="1.5" opacity="${op}" stroke-dasharray="${dnsTreeStep>=e.step?'none':'5,5'}"/>`;
+    if(dnsTreeStep>=e.step){
+      const mx=(from.x+to.x)/2,my=(from.y+to.y)/2;
+      html+=`<text x="${mx+5}" y="${my}" font-size="9" fill="${to.c}88" font-family="'Share Tech Mono'">${e.label}</text>`;
+    }
+  });
+  
+  // Nodes
+  DNS_NODES.forEach(n=>{
+    const active=dnsTreeStep>0;
+    html+=`<g>
+      <circle cx="${n.x}" cy="${n.y}" r="18" fill="${n.c}15" stroke="${n.c}66" stroke-width="1.5"/>
+      <text x="${n.x}" y="${n.y-4}" text-anchor="middle" font-size="9" fill="${n.c}" font-family="'Share Tech Mono'">${n.label}</text>
+      <text x="${n.x}" y="${n.y+10}" text-anchor="middle" font-size="8" fill="${n.c}66" font-family="'Share Tech Mono'">${n.sub}</text>
+    </g>`;
+  });
+  
+  svg.innerHTML=html;
+}
+
+function initDNSRecordsVis(){
+  const records=[
+    {type:'A',ex:'google.com → 142.250.80.46',desc:'Maps domain to IPv4 address',c:'var(--g)'},
+    {type:'AAAA',ex:'google.com → 2607:f8b0::8a',desc:'Maps domain to IPv6 address',c:'var(--c)'},
+    {type:'CNAME',ex:'www.example.com → example.com',desc:'Alias — points to another domain',c:'var(--y)'},
+    {type:'MX',ex:'example.com → aspmx.l.google.com',desc:'Mail exchange — where email routes',c:'var(--o)'},
+    {type:'TXT',ex:'v=spf1 include:_spf.google.com ~all',desc:'Text — SPF/DKIM verification',c:'var(--p)'},
+    {type:'NS',ex:'example.com → ns1.cloudflare.com',desc:'Nameserver — who handles DNS',c:'#ff6b80'},
+    {type:'PTR',ex:'1.1.168.192.in-addr.arpa → host',desc:'Reverse DNS — IP to hostname',c:'#febc2e'},
+    {type:'SOA',ex:'example.com → primary NS + serial',desc:'Start of Authority — zone metadata',c:'#888'},
+  ];
+  document.getElementById('dns-records-vis').innerHTML=`<div class="g2">`+records.map(r=>`
+    <div style="display:flex;gap:10px;background:var(--bg3);border-radius:6px;padding:10px 14px;border-left:3px solid ${r.c}">
+      <span style="color:${r.c};font-family:var(--head);font-size:14px;font-weight:900;width:50px;flex-shrink:0">${r.type}</span>
+      <div>
+        <div style="color:#2a5040;font-size:10px;margin-bottom:2px;font-family:var(--mono)">${r.ex}</div>
+        <div style="color:#1a3028;font-size:10px">${r.desc}</div>
+      </div>
+    </div>`).join('')+`</div>`;
+}
+
+function initDNSChips(){
+  document.getElementById('dns-domain-chips').innerHTML=Object.keys(DNS_DB).map(d=>`
+    <button class="chip" style="color:var(--o)" onclick="document.getElementById('dns-q').value='${d}';dnsLookup()">${d}</button>`).join('');
+}
+
+function dnsLookup(){
+  const d=document.getElementById('dns-q').value.trim();
+  const type=document.getElementById('dns-type').value;
+  const db=DNS_DB[d];
+  const el=document.getElementById('dns-result');
+  if(!db){el.innerHTML=`<div style="color:var(--r);font-size:12px;padding:8px 0;font-family:var(--mono)">** server can't find ${d}: NXDOMAIN</div>`;return;}
+  const val=db[type];
+  if(!val){el.innerHTML=`<div style="color:var(--o);font-size:12px;padding:8px 0;font-family:var(--mono)">No ${type} record found for ${d}</div>`;return;}
+  const t=Date.now();
+  el.innerHTML=`
+    <div style="background:#020508;border-radius:8px;padding:14px;font-family:var(--mono);font-size:12px;border:1px solid #081814">
+      <div style="color:var(--c);margin-bottom:8px">; &lt;&lt;&gt;&gt; DiG 9.18.1 &lt;&lt;&gt;&gt; ${d} ${type} @8.8.8.8</div>
+      <div style="color:#1e4030;margin-bottom:4px">;; Got answer:</div>
+      <div style="color:#1e4030;margin-bottom:8px">;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: ${Math.floor(Math.random()*60000)}</div>
+      <div style="color:var(--c);margin-bottom:4px">;; QUESTION SECTION:</div>
+      <div style="color:#4a8a60;margin-bottom:8px">;${d}.   IN   ${type}</div>
+      <div style="color:var(--c);margin-bottom:4px">;; ANSWER SECTION:</div>
+      <div style="color:var(--g)">${d.padEnd(24)}  300  IN  ${type.padEnd(8)} ${val}</div>
+      <div style="color:#1e4030;margin-top:8px">;; Query time: ${Math.floor(Math.random()*50+5)} msec</div>
+      <div style="color:#1e4030">;; SERVER: 8.8.8.8#53(8.8.8.8) (UDP)</div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+// HTTP
+// ═══════════════════════════════════════════════════════
+
+function drawTLSSVG(){
+  const svg=document.getElementById('tls-svg');
+  const W=700,H=180;
+  let html=``;
+  // HTTP side
+  html+=`<rect x="10" y="10" width="310" height="160" fill="#1a040022" stroke="#ff3b3b33" rx="8"/>`;
+  html+=`<text x="165" y="32" text-anchor="middle" font-size="12" font-weight="bold" fill="#ff3b3b" font-family="'Orbitron'">HTTP (Port 80)</text>`;
+  const httpData=['GET /login HTTP/1.1','Host: bank.com','Cookie: session=abc123','Authorization: Bearer TOKEN123','','username=alice&password=s3cr3t'];
+  httpData.forEach((line,i)=>{
+    html+=`<text x="22" y="${50+i*16}" font-size="9" fill="${line.includes('password')||line.includes('Cookie')||line.includes('Auth')?'#ff6b35':'#3a5040'}" font-family="'Share Tech Mono'">${line}</text>`;
+  });
+  html+=`<text x="165" y="162" text-anchor="middle" font-size="9" fill="#ff3b3b88" font-family="'Share Tech Mono'">⚠ PLAINTEXT — anyone can read this</text>`;
+  
+  // VS
+  html+=`<text x="350" y="96" text-anchor="middle" font-size="14" font-weight="bold" fill="#444" font-family="'Orbitron'">VS</text>`;
+  
+  // HTTPS side  
+  html+=`<rect x="385" y="10" width="305" height="160" fill="#00ff8808" stroke="#00ff8833" rx="8"/>`;
+  html+=`<text x="538" y="32" text-anchor="middle" font-size="12" font-weight="bold" fill="#00ff88" font-family="'Orbitron'">HTTPS (Port 443)</text>`;
+  const httpsData=['TLSv1.3 Record Layer:','Content Type: Application Data','Encrypted Data (AES-256-GCM):','a7f3b92c1e5d8a04f2...','9c3e7a15b82d4f6...','1f8a3c5e9b2d7f4...'];
+  httpsData.forEach((line,i)=>{
+    html+=`<text x="397" y="${50+i*16}" font-size="9" fill="${i>2?'#1e4030':'#3a5040'}" font-family="'Share Tech Mono'">${line}</text>`;
+  });
+  html+=`<text x="538" y="162" text-anchor="middle" font-size="9" fill="#00ff8888" font-family="'Share Tech Mono'">✓ ENCRYPTED — TLS protects all data</text>`;
+  
+  svg.innerHTML=html;
+}
+
+function initHTTPMethods(){
+  const methods=[
+    {m:'GET',c:'#00ff88',d:'Retrieve a resource. No body. Safe & idempotent.',ex:'GET /api/users/1 HTTP/1.1'},
+    {m:'POST',c:'#00e5ff',d:'Create a resource. Has request body.',ex:'POST /api/users\n{"name":"Alice"}'},
+    {m:'PUT',c:'#ffe066',d:'Replace resource entirely. Idempotent.',ex:'PUT /api/users/1\n{"name":"Alice","age":30}'},
+    {m:'PATCH',c:'#ff6b35',d:'Partial update. Only changed fields.',ex:'PATCH /api/users/1\n{"age":31}'},
+    {m:'DELETE',c:'#ff3b3b',d:'Remove a resource. Returns 204.',ex:'DELETE /api/users/1'},
+    {m:'HEAD',c:'#b06aff',d:'Like GET but returns headers only.',ex:'HEAD /api/users/1'},
+  ];
+  document.getElementById('http-methods').innerHTML=methods.map(m=>`
+    <div style="background:var(--bg3);border-radius:6px;padding:10px 14px;margin-bottom:6px;border-left:3px solid ${m.c};cursor:pointer;transition:all .2s" onclick="this.querySelector('.m-detail').style.display=this.querySelector('.m-detail').style.display==='none'?'block':'none'">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+        <span style="color:${m.c};font-family:var(--head);font-size:13px;font-weight:900;width:55px">${m.m}</span>
+        <span style="color:#3a5040;font-size:11px">${m.d}</span>
+      </div>
+      <div class="m-detail" style="display:none;background:#020508;border-radius:5px;padding:8px 12px;font-size:11px;color:#3a6040;margin-top:6px;white-space:pre">${m.ex}</div>
+    </div>`).join('');
+}
+
+function initStatusCodes(){
+  const codes=[
+    {c:200,n:'OK',col:'#00ff88',d:'Success. Body contains result.'},
+    {c:201,n:'Created',col:'#00ff88',d:'Resource created (POST).'},
+    {c:204,n:'No Content',col:'#00e5ff',d:'Success, no body (DELETE).'},
+    {c:301,n:'Moved Perm.',col:'#ffe066',d:'Redirect — cached by browser.'},
+    {c:302,n:'Found',col:'#ffe066',d:'Temp redirect. Not cached.'},
+    {c:304,n:'Not Modified',col:'#ffe066',d:'Use cached version.'},
+    {c:400,n:'Bad Request',col:'#ff6b35',d:'Malformed syntax or params.'},
+    {c:401,n:'Unauthorized',col:'#ff6b35',d:'Not authenticated.'},
+    {c:403,n:'Forbidden',col:'#ff3b3b',d:'Authenticated but not allowed.'},
+    {c:404,n:'Not Found',col:'#ff3b3b',d:"Resource doesn't exist."},
+    {c:429,n:'Rate Limited',col:'#ff6b35',d:'Too many requests.'},
+    {c:500,n:'Server Error',col:'#ff0000',d:'Server crashed/exception.'},
+    {c:502,n:'Bad Gateway',col:'#ff0000',d:'Proxy got bad response.'},
+    {c:503,n:'Unavailable',col:'#ff0000',d:'Server down/overloaded.'},
+  ];
+  document.getElementById('status-codes').innerHTML=codes.map(s=>`
+    <div class="sc-card" style="border-left-color:${s.col}" onclick="this.classList.toggle('open')">
+      <div class="sc-code" style="color:${s.col}">${s.c}</div>
+      <div class="sc-name">${s.n}</div>
+      <div class="sc-desc">${s.d}</div>
+    </div>`).join('');
+}
+
+function runCurl(){
+  const method=document.getElementById('curl-method').value;
+  const url=document.getElementById('curl-url').value;
+  const host=url.replace(/https?:\/\//,'').split('/')[0];
+  const path='/'+url.replace(/https?:\/\//,'').split('/').slice(1).join('/')||'/';
+  const delay=Math.floor(Math.random()*80+20);
+  const statusMap={GET:200,POST:201,PUT:200,DELETE:204,PATCH:200};
+  const status=statusMap[method];
+  const bodies={
+    GET:`{"data":[{"id":1,"name":"Alice"},{"id":2,"name":"Bob"}],"total":2}`,
+    POST:`{"id":3,"name":"New Resource","created_at":"${new Date().toISOString()}"}`,
+    PUT:`{"id":1,"name":"Updated Resource","updated_at":"${new Date().toISOString()}"}`,
+    DELETE:'',
+    PATCH:`{"id":1,"name":"Patched Field"}`,
+  };
+  document.getElementById('curl-result').innerHTML=`
+    <div style="background:#020508;border-radius:8px;padding:14px;font-family:var(--mono);font-size:12px;border:1px solid #081814">
+      <div style="color:var(--c)">* Trying ${host}:443...</div>
+      <div style="color:var(--c)">* Connected to ${host} port 443</div>
+      <div style="color:var(--g)">* TLSv1.3 (OUT), TLS handshake...</div>
+      <div style="color:var(--g)">* SSL certificate verified OK</div>
+      <div style="color:#1e4030">* Using HTTP/2</div>
+      <div style="color:var(--g);margin-top:6px">&gt; ${method} ${path} HTTP/2</div>
+      <div style="color:var(--g)">&gt; Host: ${host}</div>
+      <div style="color:var(--g)">&gt; User-Agent: curl/8.1.2</div>
+      <div style="color:var(--g)">&gt; Accept: */*</div>
+      <br>
+      <div style="color:var(--c)">&lt; HTTP/2 ${status} ${status===200?'OK':status===201?'Created':status===204?'No Content':'OK'}</div>
+      <div style="color:var(--c)">&lt; content-type: application/json</div>
+      <div style="color:var(--c)">&lt; strict-transport-security: max-age=31536000</div>
+      <div style="color:var(--c)">&lt; x-request-id: ${Math.random().toString(36).substr(2,12)}</div>
+      ${bodies[method]?`<br><div style="color:var(--y)">${bodies[method]}</div>`:''}
+      <div style="color:#1e4030;margin-top:8px">* Connection time: ${delay}ms</div>
+    </div>`;
+}
+
+function initSecurityHeaders(){
+  const headers=[
+    {n:'Strict-Transport-Security',ex:'max-age=31536000; includeSubDomains; preload',d:'Forces HTTPS for 1 year. Prevents SSL strip attacks.',sec:true},
+    {n:'Content-Security-Policy',ex:"default-src 'self'; script-src 'self' 'nonce-xyz'",d:'Prevents XSS by controlling what resources can load.',sec:true},
+    {n:'X-Frame-Options',ex:'DENY',d:'Prevents clickjacking — site cannot be iframed.',sec:true},
+    {n:'X-Content-Type-Options',ex:'nosniff',d:'Prevents MIME type sniffing attacks.',sec:true},
+    {n:'Referrer-Policy',ex:'strict-origin-when-cross-origin',d:'Controls what referrer info is sent.',sec:true},
+    {n:'Permissions-Policy',ex:'camera=(), microphone=(), geolocation=()',d:'Disables browser features you don\'t need.',sec:true},
+    {n:'Authorization',ex:'Bearer eyJhbGciOiJSUzI1NiJ9...',d:'Auth token — sent by client, never log this.',sec:false},
+    {n:'Cookie',ex:'session=abc; HttpOnly; Secure; SameSite=Strict',d:'Session cookie — flags are critical for security.',sec:false},
+  ];
+  document.getElementById('security-headers').innerHTML=headers.map(h=>`
+    <div style="background:var(--bg3);border-radius:6px;padding:10px 14px;margin-bottom:6px;border-left:3px solid ${h.sec?'var(--o)':'var(--dim)'}">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">
+        <span style="color:var(--p);font-weight:bold;font-size:12px">${h.n}</span>
+        ${h.sec?'<span class="badge" style="background:#2a0a00;color:var(--o)">RESPONSE</span>':'<span class="badge" style="background:#0a0a2a;color:#5050aa">REQUEST</span>'}
+      </div>
+      <div style="color:var(--y);font-size:10px;font-family:var(--mono);margin-bottom:3px">${h.ex}</div>
+      <div style="color:#2a4030;font-size:11px">${h.d}</div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// CHALLENGES
+// ═══════════════════════════════════════════════════════
+
+let score=0,solved=0,activeCh=null;
+const solvedSet=new Set();
+
+function initChallenges(){
+  document.getElementById('challenge-cards').innerHTML=CHALLENGES.map(ch=>`
+    <div class="challenge" id="ch-${ch.id}">
+      <div class="ch-header">
+        <div class="ch-num" style="background:${ch.color}22;border:1px solid ${ch.color}44;color:${ch.color}">${ch.id}</div>
+        <div class="ch-title">${ch.title}</div>
+        <span class="ch-diff badge" style="background:${ch.diff==='HARD'?'#1a0000':ch.diff==='MEDIUM'?'#1a1200':'#001a08'};color:${ch.diff==='HARD'?'var(--r)':ch.diff==='MEDIUM'?'var(--y)':'var(--g)'}">${ch.diff}</span>
+        <span style="color:${ch.color};font-size:11px;margin-left:6px">+${ch.xp}XP</span>
+        <div id="ch-check-${ch.id}" style="margin-left:auto;font-size:18px;display:none">✓</div>
+      </div>
+      <div class="ch-body">${ch.q}</div>
+      <div class="ch-hint" id="hint-${ch.id}">💡 Hint: ${ch.hint}</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn-o" style="color:${ch.color};border-color:${ch.color}44" onclick="startChallenge(${ch.id})">START IN TERMINAL</button>
+        <button class="btn-o" style="color:#3a3a5a;border-color:#1a1a3a" onclick="toggleHint(${ch.id})">HINT</button>
+      </div>
+    </div>`).join('');
+}
+
+function toggleHint(id){
+  const el=document.getElementById('hint-'+id);
+  el.classList.toggle('show');
+}
+
+function startChallenge(id){
+  activeCh=CHALLENGES.find(c=>c.id===id);
+  const el=document.getElementById('t-ch');
+  appendLine(el,'head',`\n┌──[CHALLENGE ${id}]`);
+  appendLine(el,'head',`└─ ${activeCh.title} (${activeCh.diff}) — ${activeCh.xp}XP`);
+  appendLine(el,'out',`\nQ: ${activeCh.q}`);
+  appendLine(el,'out',`\nType: answer <your answer>  |  hint  |  skip`);
+  document.getElementById('c-ch').focus();
+  document.getElementById('sec-challenges').scrollIntoView({behavior:'smooth'});
+}
+
+function updateScore(){
+  document.getElementById('score-val').textContent=score;
+  document.getElementById('solved-val').textContent=solved;
+  const pct=Math.min(100,(score/1500)*100);
+  document.getElementById('xp-fill').style.width=pct+'%';
+}
+
+// ═══════════════════════════════════════════════════════
+// TERMINAL ENGINE
+// ═══════════════════════════════════════════════════════
+
+function termCmd(e,lab){
+  if(e.key!=='Enter')return;
+  const inp=e.target,cmd=inp.value.trim();
+  if(!cmd)return;
+  const outEl=document.getElementById('t-'+lab);
+  appendLine(outEl,'input',`root@kali:~# ${cmd}`);
+  const result=processCmd(lab,cmd);
+  result.forEach(r=>appendLine(outEl,r.t,r.v));
+  inp.value='';
+}
+
+function appendLine(el,cls,txt){
+  const d=document.createElement('div');
+  d.className=`t t${cls.replace('input','i').replace('out','o').replace('head','h').replace('err','e').replace('warn','w').replace('purple','p').replace('yellow','y')}`;
+  if(cls==='input')d.className='t ti';
+  d.textContent=txt;
+  el.appendChild(d);
+  el.scrollTop=el.scrollHeight;
+}
+
+function processCmd(lab,cmd){
+  if(lab==='ch')return chCmd(cmd);
+  const p=cmd.trim().split(/\s+/);
+  if(lab==='ipv4')return ipv4Cmd(cmd,p);
+  if(lab==='cidr')return cidrTermCmd(cmd,p);
+  if(lab==='ipv6')return ipv6Cmd(cmd,p);
+  if(lab==='tcp')return tcpCmd(cmd,p);
+  if(lab==='ports')return portsCmd(cmd,p);
+  if(lab==='dns')return dnsCmd(cmd,p);
+  if(lab==='http')return httpCmd(cmd,p);
+  return [{t:'e',v:'Unknown lab'}];
+}
+
+const HELP_STYLE={t:'h',v:''};
+
+function ipv4Cmd(cmd,p){
+  const H=[
+    {t:'h',v:'Available commands:'},
+    {t:'o',v:'  ip addr show           — show network interfaces'},
+    {t:'o',v:'  ifconfig               — classic interface config'},
+    {t:'o',v:'  ping <ip>              — test connectivity'},
+    {t:'o',v:'  ipcalc <cidr>          — calculate subnet info'},
+    {t:'o',v:'  arp -a                 — show ARP table'},
+    {t:'o',v:'  traceroute <host>      — trace packet route'},
+    {t:'o',v:'  ip route show          — routing table'},
+    {t:'o',v:'  classes                — show IP address classes'},
+    {t:'o',v:'  private                — RFC 1918 private ranges'},
+  ];
+  if(p[0]==='help')return H;
+  if(cmd.startsWith('ip addr')||cmd==='ip addr show')return[
+    {t:'h',v:'1: lo: <LOOPBACK,UP,LOWER_UP>'},
+    {t:'o',v:'    link/loopback 00:00:00:00:00:00'},
+    {t:'o',v:'    inet 127.0.0.1/8 scope host lo'},
+    {t:'o',v:'    inet6 ::1/128 scope host'},
+    {t:'h',v:'2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP>'},
+    {t:'o',v:'    link/ether 08:00:27:ab:cd:ef'},
+    {t:'o',v:'    inet 192.168.1.42/24 brd 192.168.1.255 scope global dynamic'},
+    {t:'o',v:'    inet6 fe80::a00:27ff:feab:cdef/64 scope link'},
+    {t:'h',v:'3: wlan0: <BROADCAST,MULTICAST>'},
+    {t:'o',v:'    link/ether dc:a6:32:12:34:56'},
+    {t:'o',v:'    inet 10.0.0.15/24 brd 10.0.0.255 scope global dynamic'},
+  ];
+  if(p[0]==='ifconfig')return[
+    {t:'h',v:'eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500'},
+    {t:'o',v:'        inet 192.168.1.42  netmask 255.255.255.0  broadcast 192.168.1.255'},
+    {t:'o',v:'        inet6 fe80::a00:27ff:feab:cdef  prefixlen 64  scopeid 0x20<link>'},
+    {t:'o',v:'        ether 08:00:27:ab:cd:ef  txqueuelen 1000  (Ethernet)'},
+    {t:'o',v:'        RX packets 12456  bytes 18234567 (17.3 MiB)'},
+    {t:'o',v:'        TX packets 8234   bytes 2345678 (2.2 MiB)'},
+    {t:'h',v:'lo:     flags=73<UP,LOOPBACK,RUNNING>  mtu 65536'},
+    {t:'o',v:'        inet 127.0.0.1  netmask 255.0.0.0'},
+    {t:'o',v:'        inet6 ::1  prefixlen 128  scopeid 0x10<host>'},
+  ];
+  if(p[0]==='ping'){
+    const host=p[1]||'8.8.8.8';
+    return[
+      {t:'h',v:`PING ${host} (${host}) 56(84) bytes of data.`},
+      {t:'o',v:`64 bytes from ${host}: icmp_seq=1 ttl=118 time=${(Math.random()*10+5).toFixed(2)} ms`},
+      {t:'o',v:`64 bytes from ${host}: icmp_seq=2 ttl=118 time=${(Math.random()*10+5).toFixed(2)} ms`},
+      {t:'o',v:`64 bytes from ${host}: icmp_seq=3 ttl=118 time=${(Math.random()*10+5).toFixed(2)} ms`},
+      {t:'o',v:`64 bytes from ${host}: icmp_seq=4 ttl=118 time=${(Math.random()*10+5).toFixed(2)} ms`},
+      {t:'h',v:`--- ${host} ping statistics ---`},
+      {t:'o',v:`4 packets transmitted, 4 received, 0% packet loss`},
+    ];
+  }
+  if(p[0]==='ipcalc'&&p[1]){
+    const r=cidrCalc(p[1]);
+    if(!r)return[{t:'e',v:`ipcalc: ${p[1]}: Bad value`}];
+    return[
+      {t:'h',v:`Address:   ${p[1].split('/')[0].padEnd(18)} ${toBin32(r.network).match(/.{8}/g).join('.')}`},
+      {t:'o',v:`Netmask:   ${r.mask.padEnd(18)} = ${r.bits}`},
+      {t:'o',v:`Wildcard:  ${invertIP(r.mask)}`},
+      {t:'o',v:`=>`},
+      {t:'o',v:`Network:   ${r.network}/${r.bits}`},
+      {t:'o',v:`HostMin:   ${r.first}`},
+      {t:'o',v:`HostMax:   ${r.last}`},
+      {t:'o',v:`Broadcast: ${r.broadcast}`},
+      {t:'h',v:`Hosts/Net: ${r.usable.toLocaleString()}`},
+    ];
+  }
+  if(p[0]==='arp')return[
+    {t:'h',v:'Address                  HWtype  HWaddress           Flags Iface'},
+    {t:'o',v:'192.168.1.1              ether   c8:3a:35:12:ab:cd   C     eth0'},
+    {t:'o',v:'192.168.1.10             ether   00:1b:21:ab:12:34   C     eth0'},
+    {t:'o',v:'192.168.1.42             ether   08:00:27:ab:cd:ef   C     eth0'},
+  ];
+  if(p[0]==='traceroute')return[
+    {t:'h',v:`traceroute to ${p[1]||'8.8.8.8'} (${p[1]||'8.8.8.8'}), 30 hops max`},
+    {t:'o',v:` 1  192.168.1.1 (192.168.1.1)  1.234 ms`},
+    {t:'o',v:` 2  10.0.0.1 (10.0.0.1)  8.456 ms`},
+    {t:'o',v:` 3  72.14.215.85 (72.14.215.85)  12.789 ms`},
+    {t:'o',v:` 4  108.170.246.1 (108.170.246.1)  15.234 ms`},
+    {t:'o',v:` 5  ${p[1]||'8.8.8.8'} (${p[1]||'8.8.8.8'})  18.567 ms`},
+  ];
+  if(p[0]==='ip'&&p[1]==='route')return[
+    {t:'o',v:'default via 192.168.1.1 dev eth0 proto dhcp metric 100'},
+    {t:'o',v:'10.0.0.0/24 dev wlan0 proto kernel scope link src 10.0.0.15'},
+    {t:'o',v:'192.168.1.0/24 dev eth0 proto kernel scope link src 192.168.1.42'},
+  ];
+  if(p[0]==='classes')return[
+    {t:'h',v:'IP Address Classes:'},
+    {t:'o',v:'  Class A: 1.0.0.0 - 126.255.255.255 (/8)  — 16M hosts'},
+    {t:'o',v:'  Class B: 128.0.0.0 - 191.255.255.255 (/16) — 65K hosts'},
+    {t:'o',v:'  Class C: 192.0.0.0 - 223.255.255.255 (/24) — 254 hosts'},
+    {t:'o',v:'  Class D: 224.0.0.0 - 239.255.255.255 — Multicast'},
+    {t:'o',v:'  Class E: 240.0.0.0 - 255.255.255.255 — Reserved'},
+  ];
+  if(p[0]==='private')return[
+    {t:'h',v:'RFC 1918 Private Ranges:'},
+    {t:'o',v:'  10.0.0.0/8       — 16,777,216 addresses (Class A)'},
+    {t:'o',v:'  172.16.0.0/12    — 1,048,576 addresses (Class B)'},
+    {t:'o',v:'  192.168.0.0/16   — 65,536 addresses (Class C)'},
+    {t:'o',v:'  127.0.0.0/8      — Loopback (localhost)'},
+  ];
+  return H;
+}
+
+function cidrTermCmd(cmd,p){
+  const H=[
+    {t:'h',v:'CIDR Tools:'},
+    {t:'o',v:'  ipcalc <cidr>      — full subnet calculation'},
+    {t:'o',v:'  nmap -sn <cidr>    — ping sweep a subnet'},
+    {t:'o',v:'  route -n           — show routing table'},
+    {t:'o',v:'  subnets <cidr> <n> — split into N subnets'},
+    {t:'o',v:'  mask <prefix>      — show subnet mask for /n'},
+  ];
+  if(p[0]==='help')return H;
+  if(p[0]==='ipcalc'&&p[1]){
+    const r=cidrCalc(p[1]);
+    if(!r)return[{t:'e',v:'Invalid CIDR notation'}];
+    return[
+      {t:'h',v:`Address:   ${p[1].split('/')[0].padEnd(20)}/${r.bits}`},
+      {t:'o',v:`Netmask:   ${r.mask.padEnd(20)}= ${r.bits}`},
+      {t:'o',v:`Wildcard:  ${invertIP(r.mask)}`},
+      {t:'o',v:`Network:   ${r.network}/${r.bits}`},
+      {t:'o',v:`HostMin:   ${r.first}`},
+      {t:'o',v:`HostMax:   ${r.last}`},
+      {t:'o',v:`Broadcast: ${r.broadcast}`},
+      {t:'h',v:`Hosts/Net: ${r.usable.toLocaleString()}`},
+    ];
+  }
+  if(p[0]==='nmap'){
+    const target=p[p.length-1];
+    return[
+      {t:'h',v:`Starting Nmap 7.94 ( https://nmap.org )`},
+      {t:'h',v:`Nmap scan report for ${target}`},
+      {t:'o',v:`Host: 192.168.1.1    Status: Up`},
+      {t:'o',v:`Host: 192.168.1.10   Status: Up`},
+      {t:'o',v:`Host: 192.168.1.42   Status: Up`},
+      {t:'o',v:`Host: 192.168.1.100  Status: Up`},
+      {t:'h',v:`Nmap done: 256 IP addresses (4 hosts up) scanned in 3.21 seconds`},
+    ];
+  }
+  if(p[0]==='route')return[
+    {t:'h',v:'Kernel IP routing table'},
+    {t:'h',v:'Destination     Gateway         Genmask         Flags Metric Iface'},
+    {t:'o',v:'0.0.0.0         192.168.1.1     0.0.0.0         UG    100   eth0'},
+    {t:'o',v:'10.0.0.0        0.0.0.0         255.255.255.0   U     100   wlan0'},
+    {t:'o',v:'192.168.1.0     0.0.0.0         255.255.255.0   U     100   eth0'},
+  ];
+  if(p[0]==='subnets'&&p[1]&&p[2]){
+    const r=cidrCalc(p[1]);
+    const n=parseInt(p[2]);
+    if(!r||isNaN(n)||n<2)return[{t:'e',v:'Usage: subnets <cidr> <number>'}];
+    const newBits=r.bits+Math.ceil(Math.log2(n));
+    if(newBits>30)return[{t:'e',v:'Cannot create that many subnets'}];
+    return[
+      {t:'h',v:`Splitting ${p[1]} into ${n} subnets:`},
+      {t:'o',v:`New prefix: /${newBits} (${Math.pow(2,32-newBits)-2} hosts each)`},
+      ...Array.from({length:Math.min(n,8)}).map((_,i)=>{
+        const r2=cidrCalc(`${p[1].split('/')[0].split('.').map((o,idx)=>{
+          if(idx<3)return o;
+          return(parseInt(o)+i*Math.pow(2,32-newBits))%256;
+        }).join('.')}/${newBits}`);
+        return{t:'o',v:`  Subnet ${i+1}: ${r2?r2.network:'-'}/${newBits}`};
+      }),
+    ];
+  }
+  if(p[0]==='mask'&&p[1]){
+    const bits=parseInt(p[1].replace('/',''));
+    if(isNaN(bits)||bits<0||bits>32)return[{t:'e',v:'Invalid prefix'}];
+    const mask=bits===0?0:(0xffffffff<<(32-bits))>>>0;
+    return[
+      {t:'o',v:`/${bits} → Subnet mask: ${[mask>>>24&255,mask>>>16&255,mask>>>8&255,mask&255].join('.')}`},
+      {t:'o',v:`Binary: ${toBin32(mask).match(/.{8}/g).join('.')}`},
+    ];
+  }
+  return H;
+}
+
+function ipv6Cmd(cmd,p){
+  const H=[
+    {t:'h',v:'IPv6 Commands:'},
+    {t:'o',v:'  ip -6 addr            — show IPv6 addresses'},
+    {t:'o',v:'  ping6 <addr>          — ping IPv6 host'},
+    {t:'o',v:'  ipv6calc <addr>       — parse IPv6 address'},
+    {t:'o',v:'  why ipv6              — why we need IPv6'},
+    {t:'o',v:'  types                 — IPv6 address types'},
+    {t:'o',v:'  compare               — IPv4 vs IPv6 numbers'},
+  ];
+  if(p[0]==='help')return H;
+  if(cmd.startsWith('ip -6')||cmd==='ip -6 addr show')return[
+    {t:'h',v:'1: lo'},
+    {t:'o',v:'   inet6 ::1/128 scope host'},
+    {t:'h',v:'2: eth0'},
+    {t:'o',v:'   inet6 fe80::a00:27ff:feab:cdef/64 scope link'},
+    {t:'o',v:'   inet6 2001:db8:85a3::8a2e:370:7334/64 scope global dynamic'},
+    {t:'h',v:'3: wlan0'},
+    {t:'o',v:'   inet6 fe80::dec6:32ff:fe12:3456/64 scope link'},
+  ];
+  if(p[0]==='ping6')return[
+    {t:'h',v:`PING6 ${p[1]||'::1'}(${p[1]||'::1'}) 56 data bytes`},
+    {t:'o',v:`64 bytes from ${p[1]||'::1'}: icmp_seq=1 ttl=64 time=${(Math.random()*2+0.1).toFixed(3)} ms`},
+    {t:'o',v:`64 bytes from ${p[1]||'::1'}: icmp_seq=2 ttl=64 time=${(Math.random()*2+0.1).toFixed(3)} ms`},
+    {t:'o',v:`4 packets transmitted, 4 received, 0% packet loss`},
+  ];
+  if(p[0]==='why'&&p[1]==='ipv6')return[
+    {t:'h',v:'Why IPv6?'},
+    {t:'o',v:'  IPv4 exhausted: IANA ran out Feb 3, 2011'},
+    {t:'o',v:'  IPv4 total: 4,294,967,296 (~4.3 billion)'},
+    {t:'o',v:'  World population: ~8 billion — not enough!'},
+    {t:'o',v:'  IoT devices: projected 75 billion by 2025'},
+    {t:'o',v:'  IPv6 provides: 340,282,366,920,938,463,463,374,607,431,768,211,456'},
+    {t:'h',v:'  That is 340 undecillion — enough for every atom on earth'},
+    {t:'o',v:'  Additional benefits:'},
+    {t:'o',v:'  • No NAT required — simpler architecture'},
+    {t:'o',v:'  • Built-in IPSec support'},
+    {t:'o',v:'  • Auto-configuration via SLAAC'},
+    {t:'o',v:'  • More efficient routing (no broadcast)'},
+  ];
+  if(p[0]==='types')return[
+    {t:'h',v:'IPv6 Address Types:'},
+    {t:'o',v:'  ::1/128       — Loopback (≈ 127.0.0.1)'},
+    {t:'o',v:'  fe80::/10     — Link-Local (auto-assigned)'},
+    {t:'o',v:'  fc00::/7      — Unique Local (≈ RFC 1918)'},
+    {t:'o',v:'  ff00::/8      — Multicast (no broadcast in IPv6)'},
+    {t:'o',v:'  2000::/3      — Global Unicast (public IPs)'},
+    {t:'o',v:'  2001:db8::/32 — Documentation only'},
+  ];
+  if(p[0]==='compare')return[
+    {t:'h',v:'Address Space Comparison:'},
+    {t:'o',v:'  IPv4:  2^32  = 4,294,967,296'},
+    {t:'o',v:'  IPv6:  2^128 = 340,282,366,920,938,463,463,374,607,431,768,211,456'},
+    {t:'h',v:'  IPv6 is 79,228,162,514,264,337,593,543,950,336x larger'},
+    {t:'o',v:'  IPv6 addresses per mm² of Earth surface: 655,570,793,348,866,943,898,599'},
+  ];
+  if(p[0]==='ipv6calc')return[
+    {t:'o',v:`Address: ${p[1]||'2001:db8::1'}`},
+    {t:'o',v:`Type: Global Unicast / Documentation`},
+    {t:'o',v:`Compressed: ${p[1]||'2001:db8::1'}`},
+    {t:'o',v:`Full expanded: 2001:0db8:0000:0000:0000:0000:0000:0001`},
+    {t:'o',v:`Prefix: /64 (typical allocation)`},
+  ];
+  return H;
+}
+
+function tcpCmd(cmd,p){
+  const H=[
+    {t:'h',v:'TCP/UDP Tools:'},
+    {t:'o',v:'  tcpdump -i eth0        — capture packets'},
+    {t:'o',v:'  tcpdump -i eth0 port 80— filter by port'},
+    {t:'o',v:'  netstat -tulnp         — show listening ports'},
+    {t:'o',v:'  ss -tunap              — socket statistics'},
+    {t:'o',v:'  handshake              — explain 3-way handshake'},
+    {t:'o',v:'  syn flood              — SYN flood attack info'},
+    {t:'o',v:'  tcp vs udp             — comparison'},
+  ];
+  if(p[0]==='help')return H;
+  if(p[0]==='tcpdump')return[
+    {t:'h',v:`tcpdump: verbose output, use -v[v]... for full protocol decode`},
+    {t:'h',v:`listening on ${p[2]||'eth0'}, link-type EN10MB (Ethernet), snapshot length 262144 bytes`},
+    {t:'o',v:`14:23:01.123456 IP 192.168.1.42.54321 > 142.250.80.46.443: Flags [S], seq 1234567, win 65535`},
+    {t:'o',v:`14:23:01.134567 IP 142.250.80.46.443 > 192.168.1.42.54321: Flags [S.], seq 9876543, ack 1234568`},
+    {t:'o',v:`14:23:01.134890 IP 192.168.1.42.54321 > 142.250.80.46.443: Flags [.], ack 9876544, win 65535`},
+    {t:'o',v:`14:23:01.135000 IP 192.168.1.42.54321 > 142.250.80.46.443: Flags [P.], length 517`},
+    {t:'o',v:`14:23:01.156789 IP 142.250.80.46.443 > 192.168.1.42.54321: Flags [P.], length 1448`},
+    {t:'h',v:`^C`},{t:'o',v:`5 packets captured`},
+  ];
+  if(p[0]==='netstat')return[
+    {t:'h',v:'Active Internet connections (only servers)'},
+    {t:'h',v:'Proto Recv-Q Send-Q Local Address           Foreign Address         State'},
+    {t:'o',v:'tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN'},
+    {t:'o',v:'tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN'},
+    {t:'o',v:'tcp        0      0 0.0.0.0:443             0.0.0.0:*               LISTEN'},
+    {t:'o',v:'tcp        0      0 127.0.0.1:3306          0.0.0.0:*               LISTEN'},
+    {t:'o',v:'tcp        0      0 127.0.0.1:6379          0.0.0.0:*               LISTEN'},
+    {t:'o',v:'udp        0      0 0.0.0.0:53              0.0.0.0:*'},
+    {t:'o',v:'udp        0      0 0.0.0.0:67              0.0.0.0:*'},
+  ];
+  if(p[0]==='ss')return[
+    {t:'h',v:'Netid  State    Recv-Q Send-Q  Local Address:Port  Peer Address:Port'},
+    {t:'o',v:'tcp    LISTEN   0      128     0.0.0.0:22          0.0.0.0:*'},
+    {t:'o',v:'tcp    LISTEN   0      511     0.0.0.0:443         0.0.0.0:*'},
+    {t:'o',v:'tcp    ESTAB    0      0       192.168.1.42:54321  142.250.80.46:443'},
+    {t:'o',v:'tcp    ESTAB    0      0       192.168.1.42:54322  140.82.121.4:443'},
+    {t:'o',v:'udp    UNCONN   0      0       0.0.0.0:53          0.0.0.0:*'},
+  ];
+  if(p[0]==='handshake')return[
+    {t:'h',v:'TCP 3-Way Handshake:'},
+    {t:'o',v:'  CLIENT                           SERVER'},
+    {t:'o',v:'    |  SYN (seq=100)             →  |  "I want to connect"'},
+    {t:'o',v:'    |  ← SYN-ACK (seq=300,ack=101)  |  "OK, I\'m ready"'},
+    {t:'o',v:'    |  ACK (ack=301)             →  |  "Great, let\'s go"'},
+    {t:'h',v:'  Connection established. Data transfer begins.'},
+    {t:'o',v:'  To close: FIN → FIN-ACK → ACK (4-way teardown)'},
+  ];
+  if(cmd==='syn flood')return[
+    {t:'h',v:'SYN Flood DDoS Attack:'},
+    {t:'o',v:'  1. Attacker sends millions of SYN packets'},
+    {t:'o',v:'  2. Each SYN causes server to allocate state (half-open)'},
+    {t:'o',v:'  3. Server\'s connection table fills up (~64K entries)'},
+    {t:'o',v:'  4. Legitimate connections are dropped'},
+    {t:'w',v:'  → Defense: SYN cookies, rate limiting, firewalls, CDN'},
+    {t:'o',v:'  Kali tool: hping3 --flood -S -p 80 target'},
+  ];
+  if(cmd==='tcp vs udp')return[
+    {t:'h',v:'TCP:  Reliable, ordered, error-checked, handshake, flow control'},
+    {t:'o',v:'      HTTP/HTTPS, SSH, FTP, MySQL, SMTP'},
+    {t:'h',v:'UDP:  Fast, no guarantee, no handshake, minimal overhead'},
+    {t:'o',v:'      DNS, VoIP, gaming, video streaming, QUIC/HTTP3'},
+  ];
+  return H;
+}
+
+function portsCmd(cmd,p){
+  const H=[
+    {t:'h',v:'Port Scanning Tools (Kali):'},
+    {t:'o',v:'  nmap -sV <target>      — service version scan'},
+    {t:'o',v:'  nmap -sS <target>      — stealth SYN scan'},
+    {t:'o',v:'  nmap -p- <target>      — all 65535 ports'},
+    {t:'o',v:'  nmap -A <target>       — aggressive scan (OS+scripts)'},
+    {t:'o',v:'  nc -zv <target> <port> — check single port'},
+    {t:'o',v:'  masscan -p1-65535 <ip> — ultra fast port scan'},
+    {t:'o',v:'  ports high             — list high-risk ports'},
+  ];
+  if(p[0]==='help')return H;
+  if(p[0]==='nmap'){
+    const target=p[p.length-1];
+    const isAll=cmd.includes('-p-');
+    return[
+      {t:'h',v:`Starting Nmap 7.94 ( https://nmap.org )`},
+      {t:'h',v:`Nmap scan report for ${target} (192.168.1.1)`},
+      {t:'o',v:`Host is up (0.00234s latency).`},
+      {t:'h',v:`PORT      STATE  SERVICE    VERSION`},
+      {t:'o',v:`22/tcp    open   ssh        OpenSSH 8.4p1 Debian`},
+      {t:'o',v:`80/tcp    open   http       nginx 1.21.6`},
+      {t:'o',v:`443/tcp   open   https      nginx 1.21.6`},
+      isAll?{t:'w',v:`3306/tcp  open   mysql      MySQL 8.0.31`}:{t:'o',v:''},
+      isAll?{t:'w',v:`6379/tcp  open   redis      Redis key-value store`}:{t:'o',v:''},
+      {t:'h',v:`Service detection performed. Please report any incorrect results at https://nmap.org/submit/`},
+    ].filter(x=>x.v!=='');
+  }
+  if(p[0]==='nc')return[
+    {t:'o',v:`Connection to ${p[p.length-2]||'target'} ${p[p.length-1]||'80'} port [tcp/http] succeeded!`},
+  ];
+  if(p[0]==='masscan')return[
+    {t:'h',v:`Starting masscan 1.3.2`},
+    {t:'o',v:`Discovered open port 22/tcp on 192.168.1.1`},
+    {t:'o',v:`Discovered open port 80/tcp on 192.168.1.1`},
+    {t:'o',v:`Discovered open port 443/tcp on 192.168.1.1`},
+    {t:'h',v:`Scan rate: 100000 packets/sec`},
+  ];
+  if(p[0]==='ports'&&p[1]==='high')return[
+    {t:'h',v:'High-Risk Ports:'},
+    ...PORTS_DATA.filter(x=>x.risk==='high').map(x=>({t:'w',v:`  ${x.port.toString().padEnd(6)} ${x.name.padEnd(12)} — ${x.desc}`}))
+  ];
+  return H;
+}
+
+function dnsCmd(cmd,p){
+  const H=[
+    {t:'h',v:'DNS Tools (Kali):'},
+    {t:'o',v:'  dig <domain> [type]    — DNS lookup'},
+    {t:'o',v:'  dig <domain> @8.8.8.8  — use specific resolver'},
+    {t:'o',v:'  nslookup <domain>      — classic lookup'},
+    {t:'o',v:'  host <domain>          — simple lookup'},
+    {t:'o',v:'  dnsenum <domain>       — DNS enumeration'},
+    {t:'o',v:'  fierce -dns <domain>   — subdomain brute force'},
+    {t:'o',v:'  attack dangling        — subdomain takeover info'},
+  ];
+  if(p[0]==='help')return H;
+  if(p[0]==='dig'){
+    const domain=p[1]||'google.com';
+    const type=(p[2]||'A').toUpperCase();
+    const db=DNS_DB[domain]||DNS_DB['google.com'];
+    const val=db[type]||db.A;
+    return[
+      {t:'h',v:`;; <<>> DiG 9.18.1-1-Debian <<>> ${domain} ${type}`},
+      {t:'o',v:`;; ->>HEADER<<- opcode: QUERY, status: NOERROR`},
+      {t:'o',v:`;; flags: qr rd ra; QUERY: 1, ANSWER: 1`},
+      {t:'h',v:`;; ANSWER SECTION:`},
+      {t:'o',v:`${domain.padEnd(24)}  300  IN  ${type.padEnd(8)} ${val||'(no record)'}`},
+      {t:'o',v:`;; Query time: ${Math.floor(Math.random()*50+5)} msec`},
+      {t:'o',v:`;; SERVER: 8.8.8.8#53(8.8.8.8) (UDP)`},
+    ];
+  }
+  if(p[0]==='nslookup'){
+    const d=p[1]||'google.com';
+    const db=DNS_DB[d];
+    if(!db)return[{t:'e',v:`** server can't find ${d}: NXDOMAIN`}];
+    return[
+      {t:'o',v:`Server:   8.8.8.8`},
+      {t:'o',v:`Address:  8.8.8.8#53`},
+      {t:'h',v:`Non-authoritative answer:`},
+      {t:'o',v:`Name:   ${d}`},
+      {t:'o',v:`Address: ${db.A}`},
+    ];
+  }
+  if(p[0]==='host'){
+    const d=p[1]||'google.com';
+    const db=DNS_DB[d];
+    if(!db)return[{t:'e',v:`Host ${d} not found: NXDOMAIN`}];
+    return[
+      {t:'o',v:`${d} has address ${db.A}`},
+      {t:'o',v:`${d} has IPv6 address ${db.AAAA}`},
+      {t:'o',v:`${d} mail is handled by 10 ${db.MX}`},
+    ];
+  }
+  if(p[0]==='dnsenum'){
+    const d=p[1]||'example.com';
+    return[
+      {t:'h',v:`dnsenum --noreverse ${d}`},
+      {t:'h',v:`Name Servers:`},
+      {t:'o',v:`   ns1.${d}.             300      IN    A    205.251.196.1`},
+      {t:'h',v:`Mail Servers:`},
+      {t:'o',v:`   mail.${d}.            300      IN    A    198.51.100.1`},
+      {t:'h',v:`Trying Zone Transfer on ns1.${d}:`},
+      {t:'w',v:`   Zone Transfer FAILED`},
+      {t:'h',v:`Brute forcing subdomains:`},
+      {t:'o',v:`   www.${d}.             300      IN    A    93.184.216.34`},
+      {t:'o',v:`   mail.${d}.            300      IN    A    198.51.100.1`},
+      {t:'o',v:`   api.${d}.             300      IN    A    198.51.100.2`},
+    ];
+  }
+  if(p[0]==='fierce')return[
+    {t:'h',v:`fierce -dns ${p[2]||'example.com'}`},
+    {t:'o',v:`DNS Servers for ${p[2]||'example.com'}:`},
+    {t:'o',v:`   ns1.${p[2]||'example.com'}`},
+    {t:'h',v:`Nearby IPs:`},
+    {t:'o',v:`   93.184.216.33 - 93.184.216.36`},
+    {t:'h',v:`Subdomain discovery:`},
+    {t:'o',v:`   dev.${p[2]||'example.com'}  → 93.184.216.35`},
+    {t:'o',v:`   staging.${p[2]||'example.com'} → NXDOMAIN`},
+    {t:'w',v:`   admin.${p[2]||'example.com'} → 93.184.216.36 [potential interest]`},
+  ];
+  if(cmd.includes('dangling'))return[
+    {t:'h',v:'Subdomain Takeover (Dangling DNS):'},
+    {t:'o',v:'  1. dev.company.com → CNAME → deleted-bucket.s3.amazonaws.com'},
+    {t:'o',v:'  2. S3 bucket deleted — DNS record still exists'},
+    {t:'o',v:'  3. Attacker: aws s3 mb s3://deleted-bucket'},
+    {t:'w',v:'  4. dev.company.com now serves attacker content!'},
+    {t:'o',v:'  Tools: subjack, nuclei, can-i-take-over-xyz'},
+    {t:'o',v:'  Fix: delete DNS before deleting cloud resources'},
+  ];
+  return H;
+}
+
+function httpCmd(cmd,p){
+  const H=[
+    {t:'h',v:'HTTP Tools (Kali):'},
+    {t:'o',v:'  curl -v <url>          — verbose HTTP request'},
+    {t:'o',v:'  curl -X POST -d ...    — POST request'},
+    {t:'o',v:'  wget <url>             — download resource'},
+    {t:'o',v:'  nikto -h <target>      — web vulnerability scan'},
+    {t:'o',v:'  whatweb <target>       — identify web tech'},
+    {t:'o',v:'  headers security       — list security headers'},
+    {t:'o',v:'  tls explain            — TLS handshake steps'},
+    {t:'o',v:'  status <code>          — explain status code'},
+  ];
+  if(p[0]==='help')return H;
+  if(p[0]==='curl'){
+    const url=p[p.length-1];
+    const host=url.replace(/https?:\/\//,'').split('/')[0]||'example.com';
+    return[
+      {t:'h',v:`* Trying ${host}:443...`},
+      {t:'o',v:`* Connected to ${host} (93.184.216.34) port 443 (#0)`},
+      {t:'o',v:`* TLSv1.3 (OUT), TLS handshake, Client hello (1):`},
+      {t:'o',v:`* TLSv1.3 (IN), TLS handshake, Server hello (2):`},
+      {t:'o',v:`* TLSv1.3 (IN), TLS handshake, Certificate (11):`},
+      {t:'o',v:`* TLSv1.3 (IN), TLS handshake, CERT verify (15):`},
+      {t:'o',v:`* TLSv1.3 (IN), TLS handshake, Finished (20):`},
+      {t:'o',v:`* SSL certificate verify ok.`},
+      {t:'h',v:`> GET / HTTP/2`},
+      {t:'h',v:`> Host: ${host}`},
+      {t:'h',v:`> User-Agent: curl/8.1.2`},
+      {t:'o',v:`< HTTP/2 200`},
+      {t:'o',v:`< content-type: text/html; charset=UTF-8`},
+      {t:'o',v:`< strict-transport-security: max-age=31536000`},
+      {t:'o',v:`< x-xss-protection: 0`},
+      {t:'o',v:`< x-frame-options: SAMEORIGIN`},
+      {t:'o',v:`* Connection #0 to host ${host} left intact`},
+    ];
+  }
+  if(p[0]==='wget')return[
+    {t:'o',v:`--${new Date().toISOString()}--  ${p[1]||'http://example.com'}`},
+    {t:'o',v:`Resolving example.com... 93.184.216.34`},
+    {t:'o',v:`Connecting to example.com|93.184.216.34|:443... connected.`},
+    {t:'o',v:`HTTP request sent, awaiting response... 200 OK`},
+    {t:'o',v:`Saving to: 'index.html'`},
+    {t:'h',v:`index.html         100%[==================>]  1.27K  --.-KB/s   in 0s`},
+  ];
+  if(p[0]==='nikto')return[
+    {t:'h',v:`- Nikto v2.1.6`},
+    {t:'h',v:`+ Target IP: 93.184.216.34`},
+    {t:'h',v:`+ Target Hostname: ${p[2]||'example.com'}`},
+    {t:'o',v:`+ Start Time: ${new Date().toISOString()}`},
+    {t:'w',v:`+ Server: nginx/1.21.6`},
+    {t:'w',v:`+ The X-XSS-Protection header is not defined`},
+    {t:'w',v:`+ The X-Content-Type-Options header is not set`},
+    {t:'e',v:`+ OSVDB-3092: /admin/: This might be interesting...`},
+    {t:'e',v:`+ OSVDB-3268: /backup/: Directory indexing found`},
+    {t:'o',v:`+ 7915 requests: 0 error(s) and 4 item(s) reported`},
+  ];
+  if(p[0]==='whatweb')return[
+    {t:'h',v:`WhatWeb report for ${p[1]||'https://example.com'}`},
+    {t:'o',v:`Status: 200 OK`},
+    {t:'o',v:`nginx[1.21.6]`},
+    {t:'o',v:`HTML5`},
+    {t:'o',v:`HTTPServer[nginx/1.21.6]`},
+    {t:'o',v:`UncommonHeaders[x-request-id]`},
+    {t:'o',v:`X-Frame-Options[SAMEORIGIN]`},
+  ];
+  if(p[0]==='headers'&&p[1]==='security')return[
+    {t:'h',v:'Critical Security Response Headers:'},
+    {t:'o',v:'  Strict-Transport-Security  → Forces HTTPS always'},
+    {t:'o',v:'  Content-Security-Policy    → Prevents XSS'},
+    {t:'o',v:'  X-Frame-Options            → Prevents clickjacking'},
+    {t:'o',v:'  X-Content-Type-Options     → Stops MIME sniffing'},
+    {t:'o',v:'  Referrer-Policy            → Controls referrer leak'},
+    {t:'o',v:'  Permissions-Policy         → Disables unused APIs'},
+  ];
+  if(p[0]==='tls'&&p[1]==='explain')return[
+    {t:'h',v:'TLS 1.3 Handshake:'},
+    {t:'o',v:'  1. ClientHello — TLS version + cipher suites'},
+    {t:'o',v:'  2. ServerHello — chosen cipher + certificate'},
+    {t:'o',v:'  3. CertVerify  — client verifies against CA'},
+    {t:'o',v:'  4. KeyExchange — Diffie-Hellman, session key'},
+    {t:'o',v:'  5. Finished    — all data now AES-encrypted'},
+    {t:'o',v:'  TLS 1.3 is ~50% faster than TLS 1.2 (0-RTT)'},
+  ];
+  if(p[0]==='status'&&p[1]){
+    const code=parseInt(p[1]);
+    const codes={200:'OK — success',201:'Created — POST success',204:'No Content — DELETE',301:'Moved Permanently',302:'Found (temp redirect)',400:'Bad Request',401:'Unauthorized (not authenticated)',403:'Forbidden (authenticated, not allowed)',404:'Not Found',429:'Too Many Requests (rate limited)',500:'Internal Server Error',502:'Bad Gateway',503:'Service Unavailable'};
+    const desc=codes[code];
+    if(desc)return[{t:'h',v:`HTTP ${code}: ${desc}`}];
+    return[{t:'e',v:`Unknown status code: ${code}`}];
+  }
+  return H;
+}
+
+function chCmd(cmd){
+  const p=cmd.toLowerCase().trim().split(/\s+/);
+  if(p[0]==='help')return[
+    {t:'h',v:'Challenge Mode Commands:'},
+    {t:'o',v:'  challenge <1-10>  — load a challenge'},
+    {t:'o',v:'  answer <text>     — submit your answer'},
+    {t:'o',v:'  hint              — get a hint'},
+    {t:'o',v:'  skip              — skip current challenge'},
+    {t:'o',v:'  score             — show your score'},
+    {t:'o',v:'  list              — list all challenges'},
+  ];
+  if(p[0]==='list')return[
+    {t:'h',v:'Available Challenges:'},
+    ...CHALLENGES.map(c=>({t:solvedSet.has(c.id)?'o':'p',v:`  [${solvedSet.has(c.id)?'✓':'○'}] ${c.id}. ${c.title} (${c.diff}) — ${c.xp}XP`}))
+  ];
+  if(p[0]==='challenge'&&p[1]){
+    const id=parseInt(p[1]);
+    const ch=CHALLENGES.find(c=>c.id===id);
+    if(!ch)return[{t:'e',v:`Challenge ${id} not found. Valid: 1-${CHALLENGES.length}`}];
+    activeCh=ch;
+    return[
+      {t:'h',v:`\n[CHALLENGE ${id}] ${ch.title} — ${ch.diff} — ${ch.xp}XP`},
+      {t:'o',v:`\nQ: ${ch.q}`},
+      {t:'o',v:`\nType: answer <your answer>`},
+    ];
+  }
+  if(p[0]==='answer'&&activeCh){
+    const ans=cmd.replace(/^answer\s+/i,'').trim().toLowerCase();
+    if(activeCh.ans.some(a=>ans.includes(a)||a.includes(ans))){
+      if(!solvedSet.has(activeCh.id)){
+        solvedSet.add(activeCh.id);
+        score+=activeCh.xp;
+        solved++;
+        updateScore();
+        const chEl=document.getElementById(`ch-${activeCh.id}`);
+        if(chEl){chEl.style.borderColor=activeCh.color;document.getElementById(`ch-check-${activeCh.id}`).style.display='block';}
+      }
+      return[
+        {t:'h',v:`✓ CORRECT! +${solvedSet.has(activeCh.id)?0:activeCh.xp}XP`},
+        {t:'o',v:`\nExplanation: ${activeCh.explain}`},
+        {t:'o',v:`\nType 'challenge ${Math.min(activeCh.id+1,CHALLENGES.length)}' for next challenge.`},
+      ];
+    }
+    return[
+      {t:'e',v:`✗ Incorrect. Your answer: "${ans}"`},
+      {t:'o',v:`Type 'hint' for a clue, or try again.`},
+    ];
+  }
+  if(p[0]==='answer'&&!activeCh)return[{t:'e',v:'No active challenge. Type: challenge <number>'}];
+  if(p[0]==='hint'){
+    if(!activeCh)return[{t:'e',v:'No active challenge. Type: challenge <number>'}];
+    return[{t:'p',v:`💡 Hint: ${activeCh.hint}`}];
+  }
+  if(p[0]==='skip'){
+    const next=activeCh?activeCh.id+1:1;
+    activeCh=null;
+    return[{t:'w',v:`Skipped. Type 'challenge ${Math.min(next,CHALLENGES.length)}' for next.`}];
+  }
+  if(p[0]==='score')return[
+    {t:'h',v:`Score: ${score} XP | Solved: ${solved}/${CHALLENGES.length}`},
+    {t:'o',v:solved>=8?'Elite Hacker 🏆':solved>=5?'Advanced 🔥':solved>=3?'Intermediate ⚡':'Beginner — keep going!'},
+  ];
+  return[{t:'o',v:`Type 'help' for commands or 'challenge 1' to start`}];
+}
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+
+window.addEventListener('DOMContentLoaded',()=>{
+  initOctets();
+  drawPacketHeader();
+  drawIPClasses();
+  initPrivateVis();
+  initCIDRScale();
+  runCIDR();
+
+  parseIPv6();
+  drawIPv6Compare();
+  initIPv6Types();
+
+  initTCPUDP();
+  drawHSSVG();
+  initTCPFlags();
+
+  initPortHeat();
+  filterPorts();
+
+  drawDNSTree();
+  initDNSRecordsVis();
+  initDNSChips();
+
+  drawTLSSVG();
+  initHTTPMethods();
+  initStatusCodes();
+  initSecurityHeaders();
+
+  initChallenges();
+  updateScore();
+
+  // Enter on CIDR
+  document.getElementById('cidr-inp').addEventListener('keydown',e=>{if(e.key==='Enter')runCIDR();});
+  document.getElementById('ipv6-inp').addEventListener('keydown',e=>{if(e.key==='Enter')parseIPv6();});
+});
+</script>
+</body>
+</html>
